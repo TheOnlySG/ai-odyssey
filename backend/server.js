@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
 const db = require('./database');
-const { generateBlueprint } = require('./services/geminiService');
+const { generateBlueprint, chatWithBlueprint } = require('./services/geminiService');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -40,14 +40,56 @@ app.post('/api/generate', async (req, res) => {
     }
 });
 
-// Fetch History
+// Fetch History with aggregate metrics
 app.get('/api/history', (req, res) => {
-    db.all(`SELECT id, idea, created_at FROM history ORDER BY created_at DESC`, [], (err, rows) => {
+    db.all(`SELECT id, idea, created_at, generated_data FROM history ORDER BY created_at DESC`, [], (err, rows) => {
         if (err) {
             return res.status(500).json({ error: "Failed to fetch history" });
         }
-        res.json(rows);
+        // Map rows to include lightweight metrics to power analytics, but omit the massive generated_data payload
+        const processedRows = rows.map(row => {
+            let metrics = { healthScore: 0, category: 'Unknown', mvpFeaturesCount: 0 };
+            try {
+                if (row.generated_data) {
+                    const data = JSON.parse(row.generated_data);
+                    metrics.healthScore = data?.metrics?.healthScore || 0;
+                    metrics.mvpFeaturesCount = data?.metrics?.mvpFeaturesCount || 0;
+                    
+                    // Simple logic to extract a category or use default
+                    if (data?.features && data.features.length > 0) {
+                        metrics.category = data.features[0].category || 'General';
+                    }
+                }
+            } catch (e) {
+                // Ignore parse errors for badly formatted historical data
+            }
+            
+            return {
+                id: row.id,
+                idea: row.idea,
+                created_at: row.created_at,
+                ...metrics
+            };
+        });
+        
+        res.json(processedRows);
     });
+});
+
+// Chat with AI Assistant
+app.post('/api/chat', async (req, res) => {
+    const { message, blueprintContext, history } = req.body;
+    if (!message) {
+        return res.status(400).json({ error: "No message provided" });
+    }
+
+    try {
+        const responseText = await chatWithBlueprint(blueprintContext, history, message);
+        res.json({ reply: responseText });
+    } catch (error) {
+        console.error("Chat error:", error);
+        res.status(500).json({ error: "Failed to generate AI response" });
+    }
 });
 
 // Fetch single generation from History

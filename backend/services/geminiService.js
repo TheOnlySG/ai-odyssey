@@ -121,6 +121,43 @@ const schema = {
   required: ['prd', 'metrics', 'radarAnalysis', 'competitors', 'features']
 };
 
+const fallbackMockData = {
+    prd: {
+        productName: "OriginMock (API 503 Fallback)",
+        tagline: "Testing the UI when Gemini is on a coffee break.",
+        problemStatement: "The Gemini API is currently experiencing a temporary high-demand spike (503). We are using a locally generated mock blueprint so you can continue testing the frontend interface without blockers.",
+        userPainPoints: ["API Rate Limits", "High Demand Spikes", "Temporary Unavailability"],
+        marketGap: "Need for robust offline fallbacks.",
+        marketOpportunity: "Developing resilient frontends.",
+        targetPersona: "Developers and Designers",
+        targetPersonaImageText: "A developer looking at a 503 error",
+        keyObjectives: ["Test UI rendering", "Verify Kanban board routing", "Ensure history saving works"],
+        coreHypothesis: "Mock data keeps the UI flowing smoothly.",
+        mitigations: [{risk: "API Load", solution: "Fallback to robust local mock structures."}],
+        longTermVision: "Implement automated background retry mechanisms.",
+        technicalSpec: {
+            techStack: { frontend: "React + Vite", backend: "Node.js", database: "SQLite", infrastructure: "Local" },
+            databaseArchitecture: [{ table: "ideas", description: "Stores the generated blueprints" }],
+            apiIntegrations: [{ service: "Gemini", purpose: "AI Generation" }],
+            securityModel: "Standard JWT"
+        },
+        successBaseline: "UI components mount",
+        successTarget: "UI renders beautifully with data"
+    },
+    metrics: { healthScore: 88, buildTimeWeeks: "2-4", competitorsCount: 2, mvpFeaturesCount: 3 },
+    radarAnalysis: { utility: 9, marketSize: 8, defensibility: 5, monetization: 7, techRisk: 2, urgency: 8 },
+    competitors: [
+        { name: "Legacy Gen Tool", typeLabel: "Legacy", weakness: "Crashes on 503", strength: "Established" }
+    ],
+    features: [
+        { title: "Mock Auth Setup", description: "Helps test MVP column", phase: "MVP", complexity: "Low", category: "Auth & Sec" },
+        { title: "Dashboard Layout", description: "Helps test MVP column", phase: "MVP", complexity: "Medium", category: "Core UI" },
+        { title: "Core DB Schema", description: "Helps test MVP column", phase: "MVP", complexity: "Medium", category: "Core UI" },
+        { title: "AI Categorization", description: "Helps test V1 column", phase: "V1", complexity: "High", category: "AI Engine" },
+        { title: "Mobile Layout", description: "Helps test Future column", phase: "Future", complexity: "Medium", category: "Core UI" }
+    ]
+};
+
 async function generateBlueprint(ideaPrompt) {
     const prompt = `You are an expert product manager, architect, and startup co-founder using Origin (Precision Instrumentation for Startups). 
 A user has submitted the following startup/product idea: "${ideaPrompt}".
@@ -141,25 +178,96 @@ For the Engineering Blueprint (Technical Spec):
 
 - Ensure all sections are useful, detailed, and highlights how Origin instrumentation helps define the path to MVP.`;
 
-    const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: prompt,
-        config: {
-            responseMimeType: 'application/json',
-            responseSchema: schema,
-            temperature: 0.7
+    try {
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: prompt,
+            config: {
+                responseMimeType: 'application/json',
+                responseSchema: schema,
+                temperature: 0.7
+            }
+        });
+
+        try {
+            const data = JSON.parse(response.text);
+            return data;
+        } catch (err) {
+            console.error("Gemini response parsing error:", err);
+            throw new Error("Failed to parse AI output into strict JSON.");
         }
+    } catch (apiError) {
+        console.error("Gemini API Error:", apiError.message || apiError);
+        // Fallback robustly for 503s, Overloaded APIs, or fetch failures (network timeouts from Google)
+        const errStr = String(apiError).toLowerCase();
+        const apiErrMsg = (apiError?.message || "").toLowerCase();
+        
+        if (
+            apiError?.status === 503 || 
+            apiError?.status === 'UNAVAILABLE' || 
+            errStr.includes('503') || 
+            errStr.includes('fetch failed') ||
+            apiErrMsg.includes('fetch failed')
+        ) {
+            console.log("Serving mock data due to 503 or fetch failure.");
+            return fallbackMockData;
+        }
+        throw apiError;
+    }
+}
+
+async function chatWithBlueprint(blueprintData, history, newMessage) {
+    // Construct the context from the blueprint data snippet
+    const contextStr = JSON.stringify({
+        productName: blueprintData?.prd?.productName,
+        tagline: blueprintData?.prd?.tagline,
+        hypothesis: blueprintData?.prd?.coreHypothesis,
+        techStack: blueprintData?.prd?.technicalSpec?.techStack,
+        healthScore: blueprintData?.metrics?.healthScore
     });
 
+    let prompt = `You are an expert AI Co-Founder for a startup. The current project context is: ${contextStr}.\n`;
+    
+    // Add history
+    if (history && history.length > 0) {
+        prompt += "Here is the recent conversation history:\n";
+        history.forEach(msg => {
+            prompt += `${msg.role === 'user' ? 'Founder' : 'You'}: ${msg.content}\n`;
+        });
+    }
+
+    prompt += `\nFounder: ${newMessage}\nYou (AI Co-Founder):`;
+
     try {
-        const data = JSON.parse(response.text);
-        return data;
-    } catch (err) {
-        console.error("Gemini response parsing error:", err);
-        throw new Error("Failed to parse AI output into strict JSON.");
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: prompt,
+            config: {
+                temperature: 0.7
+            }
+        });
+
+        return response.text;
+    } catch (apiError) {
+        console.error("Gemini Chat API Error:", apiError.message || apiError);
+        const errStr = String(apiError).toLowerCase();
+        const apiErrMsg = (apiError?.message || "").toLowerCase();
+        
+        if (
+            apiError?.status === 503 || 
+            apiError?.status === 'UNAVAILABLE' || 
+            errStr.includes('503') || 
+            errStr.includes('fetch failed') ||
+            apiErrMsg.includes('fetch failed')
+        ) {
+            return "*(System Status: 503 Unavailable)*\n\nI apologize, but my core AI engine is currently experiencing a temporary high-demand spike from Google servers. Please try asking your question again in a few moments!";
+        }
+        
+        throw new Error("Failed to generate chat response: " + apiError.message);
     }
 }
 
 module.exports = {
-    generateBlueprint
+    generateBlueprint,
+    chatWithBlueprint
 };
