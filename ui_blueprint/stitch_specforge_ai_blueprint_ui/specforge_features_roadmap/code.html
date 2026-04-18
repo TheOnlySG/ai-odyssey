@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Features &amp; Roadmap | SpecForge</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@500;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-bright": "#39383e",
+                        "surface": "#131318",
+                        "error-container": "#93000a",
+                        "inverse-primary": "#732ee4",
+                        "surface-variant": "#35343a",
+                        "on-primary-container": "#ede0ff",
+                        "secondary-fixed": "#acedff",
+                        "error": "#ffb4ab",
+                        "surface-container-low": "#1b1b20",
+                        "on-tertiary": "#003825",
+                        "on-secondary-fixed": "#001f26",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#5a00c6",
+                        "primary-fixed-dim": "#d2bbff",
+                        "primary": "#d2bbff",
+                        "on-primary-fixed": "#25005a",
+                        "on-primary": "#3f008e",
+                        "tertiary-container": "#007551",
+                        "secondary-fixed-dim": "#4cd7f6",
+                        "on-secondary-container": "#00424e",
+                        "tertiary-fixed": "#68fcbf",
+                        "surface-container": "#1f1f24",
+                        "secondary": "#4cd7f6",
+                        "background": "#131318",
+                        "surface-container-lowest": "#0e0e13",
+                        "on-surface-variant": "#ccc3d8",
+                        "on-tertiary-fixed": "#002114",
+                        "surface-container-high": "#2a292f",
+                        "on-secondary": "#003640",
+                        "inverse-surface": "#e4e1e9",
+                        "tertiary-fixed-dim": "#45dfa4",
+                        "on-surface": "#e4e1e9",
+                        "surface-dim": "#131318",
+                        "outline": "#958da1",
+                        "on-error": "#690005",
+                        "on-background": "#e4e1e9",
+                        "primary-fixed": "#eaddff",
+                        "secondary-container": "#03b5d3",
+                        "on-tertiary-fixed-variant": "#005137",
+                        "tertiary": "#45dfa4",
+                        "on-tertiary-container": "#6bffc1",
+                        "surface-container-highest": "#35343a",
+                        "outline-variant": "#4a4455",
+                        "primary-container": "#7c3aed",
+                        "surface-tint": "#d2bbff",
+                        "on-secondary-fixed-variant": "#004e5c",
+                        "inverse-on-surface": "#303035"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .ghost-border { border: 0.5px solid rgba(74, 68, 85, 0.2); }
+        .ambient-shadow { box-shadow: 32px 0 64px rgba(13,13,18,0.06); }
+        .text-gradient { background: linear-gradient(135deg, #d2bbff, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .bg-gradient-primary { background: linear-gradient(135deg, #7c3aed, #d2bbff); }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- Shared Component: SideNavBar -->
+<nav class="fixed left-0 top-0 h-full flex flex-col p-4 w-64 border-r-[0.5px] border-[#39383e]/10 bg-[#1b1b20]/70 backdrop-blur-xl z-50">
+<div class="mb-8 px-4 flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary-container flex items-center justify-center text-on-primary font-headline font-bold">K</div>
+<div>
+<h1 class="text-xl font-bold tracking-tighter text-[#e4e1e9] font-['Plus_Jakarta_Sans']">Kinetic</h1>
+<p class="text-xs text-[#9a9a9a]">Pro Instrument</p>
+</div>
+</div>
+<button class="mb-8 w-full py-2.5 px-4 bg-gradient-primary text-[#25005a] rounded-lg font-medium text-sm transition-transform scale-95 active:scale-90 hover:opacity-90 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span>
+            New Feature
+        </button>
+<div class="flex flex-col gap-1 flex-grow font-['Plus_Jakarta_Sans'] text-sm tracking-tight">
+<a class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#9a9a9a] hover:text-[#e4e1e9] hover:bg-[#1f1f24] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#d2bbff] bg-[#1f1f24] border-r-2 border-[#7c3aed]" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">list_alt</span>
+                Features
+            </a>
+<a class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#9a9a9a] hover:text-[#e4e1e9] hover:bg-[#1f1f24] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">rebase_edit</span>
+                Roadmap
+            </a>
+<a class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#9a9a9a] hover:text-[#e4e1e9] hover:bg-[#1f1f24] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">insights</span>
+                Analytics
+            </a>
+<a class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#9a9a9a] hover:text-[#e4e1e9] hover:bg-[#1f1f24] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+                Settings
+            </a>
+</div>
+<div class="mt-auto flex flex-col gap-1 border-t-[0.5px] border-[#39383e]/10 pt-4 font-['Plus_Jakarta_Sans'] text-sm tracking-tight">
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-[#9a9a9a] hover:text-[#e4e1e9] hover:bg-[#1f1f24] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">description</span>
+                Docs
+            </a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-[#9a9a9a] hover:text-[#e4e1e9] hover:bg-[#1f1f24] transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">help_outline</span>
+                Support
+            </a>
+</div>
+</nav>
+<!-- Shared Component: TopAppBar -->
+<header class="fixed top-0 right-0 left-64 flex justify-between items-center px-8 z-40 h-16 border-b-[0.5px] border-[#39383e]/10 bg-[#131318]/70 backdrop-blur-md w-[calc(100%-16rem)]">
+<div class="flex items-center gap-8">
+<span class="font-['Plus_Jakarta_Sans'] font-black tracking-tight text-[#e4e1e9] text-lg">Monolith</span>
+<nav class="hidden md:flex items-center gap-6 font-['Inter'] text-sm font-medium">
+<a class="text-[#d2bbff] border-b border-[#7c3aed] pb-1 cursor-pointer opacity-80 hover:opacity-100 hover:text-[#4cd7f6] transition-all" href="#">Overview</a>
+<a class="text-[#9a9a9a] pb-1 cursor-pointer opacity-80 hover:opacity-100 hover:text-[#4cd7f6] transition-all" href="#">Changelog</a>
+<a class="text-[#9a9a9a] pb-1 cursor-pointer opacity-80 hover:opacity-100 hover:text-[#4cd7f6] transition-all" href="#">Feedback</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+<input class="bg-surface-container-low border-none rounded-full py-1.5 pl-10 pr-4 text-sm text-on-surface focus:ring-1 focus:ring-primary w-48 transition-all" placeholder="Search..." type="text"/>
+</div>
+<div class="flex items-center gap-4 text-[#d2bbff]">
+<button class="cursor-pointer opacity-80 hover:opacity-100 hover:text-[#4cd7f6] transition-all flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="cursor-pointer opacity-80 hover:opacity-100 hover:text-[#4cd7f6] transition-all flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">bolt</span>
+</button>
+<img alt="User Profile" class="w-8 h-8 rounded-full border border-surface-bright object-cover" data-alt="professional headshot of a young woman with dark hair against a neutral gray background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzG-3C6BniTB6i_UcKiPrgzkLo98b0MoPQKaFaIDJq4PRFNdgPO1dhUrnbwCV8n8sAdJs6yg4wO6dMONRG-vfviyN6u4UZsPvL_-8w_rMjYcJK4pzb8WwJup0ECe5l6I2wYxqqPibXczCJINI48KyF7rU6RpG1Ro0r8qiL1IE34w3lSuLj5UqUC4eywqVawP6PSlPFBppCWVJwGsobw_jW-BGqjX40an_lUNwq-txLoFPOHuYurOQYDJsBviyEROMluOlLoFnH3v3K"/>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="ml-64 mt-16 p-10 max-w-7xl mx-auto space-y-12">
+<!-- Section 1: Header -->
+<section class="flex items-end justify-between">
+<div class="space-y-2">
+<h2 class="font-headline text-5xl tracking-tight font-bold text-on-surface">Features &amp; Roadmap</h2>
+<p class="font-body text-sm text-on-surface-variant max-w-xl">AI-scoped features tracked against MVP, V1, and Future releases.</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex bg-surface-container-low rounded-lg p-1 ghost-border">
+<button class="px-4 py-1.5 text-sm font-medium bg-surface-container text-on-surface rounded shadow-sm">Board</button>
+<button class="px-4 py-1.5 text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors">List</button>
+</div>
+<button class="px-5 py-2 bg-gradient-primary text-[#25005a] rounded-lg font-medium text-sm flex items-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                    Add Feature
+                </button>
+</div>
+</section>
+<!-- Section 2: Row 1 - Metrics -->
+<section class="grid grid-cols-4 gap-6">
+<div class="bg-surface-container rounded-xl p-6 ghost-border flex flex-col gap-2 relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="text-sm font-label text-on-surface-variant">Total Features</span>
+<span class="font-mono text-4xl text-on-surface tracking-tighter">24</span>
+</div>
+<div class="bg-surface-container rounded-xl p-6 ghost-border flex flex-col gap-2 relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="text-sm font-label text-on-surface-variant">MVP Target</span>
+<span class="font-mono text-4xl text-secondary tracking-tighter">07</span>
+</div>
+<div class="bg-surface-container rounded-xl p-6 ghost-border flex flex-col gap-2">
+<span class="text-sm font-label text-on-surface-variant">Avg Complexity</span>
+<div class="flex items-center gap-2 mt-1">
+<span class="font-mono text-xl text-on-surface">Medium</span>
+<div class="flex gap-1">
+<div class="w-1.5 h-4 bg-primary rounded-sm"></div>
+<div class="w-1.5 h-4 bg-primary rounded-sm"></div>
+<div class="w-1.5 h-4 bg-surface-bright rounded-sm"></div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container rounded-xl p-6 ghost-border flex flex-col gap-2">
+<span class="text-sm font-label text-on-surface-variant">Est. Build Time</span>
+<span class="font-mono text-4xl text-on-surface tracking-tighter">14<span class="text-lg text-on-surface-variant ml-1">wks</span></span>
+</div>
+</section>
+<!-- Section 3: Row 2 - Phase Overview -->
+<section class="bg-surface-container rounded-xl p-6 ghost-border ambient-shadow">
+<h3 class="font-headline font-bold text-on-surface mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">layers</span>
+                Build Phase Overview
+            </h3>
+<div class="space-y-6">
+<!-- MVP -->
+<div class="space-y-2">
+<div class="flex justify-between text-sm">
+<span class="font-medium text-on-surface">MVP (Now)</span>
+<span class="font-mono text-on-surface-variant">7 / 7</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-low rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full w-[100%] shadow-[0_0_10px_rgba(210,187,255,0.4)]"></div>
+</div>
+</div>
+<!-- V1 -->
+<div class="space-y-2">
+<div class="flex justify-between text-sm">
+<span class="font-medium text-on-surface">Version 1 (Next)</span>
+<span class="font-mono text-on-surface-variant">4 / 12</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-low rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full w-[33%]"></div>
+</div>
+</div>
+<!-- Future -->
+<div class="space-y-2">
+<div class="flex justify-between text-sm">
+<span class="font-medium text-on-surface-variant">Future (Later)</span>
+<span class="font-mono text-on-surface-variant">0 / 5</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-low rounded-full overflow-hidden">
+<div class="h-full bg-surface-bright rounded-full w-0"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 4: Row 3 - Kanban Board -->
+<section class="grid grid-cols-3 gap-6">
+<!-- Column 1: MVP -->
+<div class="flex flex-col gap-4">
+<div class="border-t-2 border-primary pt-3 flex justify-between items-center">
+<h4 class="font-headline font-semibold text-on-surface">MVP - Now</h4>
+<span class="font-mono text-xs bg-surface-container-high px-2 py-1 rounded text-on-surface-variant">7</span>
+</div>
+<!-- Card -->
+<div class="bg-surface-container-high rounded-xl p-5 ghost-border ambient-shadow space-y-4 hover:border-primary/50 transition-colors cursor-pointer group">
+<div class="flex justify-between items-start">
+<span class="text-[10px] uppercase tracking-wider font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded border border-primary/20">Auth</span>
+<span class="text-xs bg-surface-bright text-on-surface-variant px-2 py-0.5 rounded-full">High</span>
+</div>
+<div>
+<h5 class="font-medium text-on-surface mb-1 group-hover:text-primary transition-colors">SSO Integration</h5>
+<p class="text-xs text-on-surface-variant line-clamp-2">Implement Google and GitHub OAuth providers for seamless onboarding.</p>
+</div>
+<div class="flex justify-between items-center pt-2 border-t-[0.5px] border-outline-variant/10">
+<span class="flex items-center gap-1 text-xs text-secondary">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary"></div> In Progress
+                        </span>
+<img alt="Assignee" class="w-6 h-6 rounded-full border-[0.5px] border-outline-variant/30" data-alt="professional headshot of a man with a slight smile wearing a dark shirt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAddpDYPBQhTj08PnjiXTLJ9veWdyGEhTxq0z08hDYLMYO4Q-OnhVFqENHScUjJ4OHF9E-a0dw0T-KIeRmJg3a4rbZ3zfMu3XCllPzVo3Wei-RiJ0CESEDs_fvXbI7X6wbHpxvzpzhWkILWSehjQWJWO6M901LSGeuEd58-FOyu-goDRhkp5CF1Rqwk8y7M9NFiVsMepyGSbXYwEuhllBxRFv_nM3uoF-a_ob_Zbkfn_fDiGglPxe2voago4ly56CwmAgLh4uREBTZC"/>
+</div>
+</div>
+<!-- Card -->
+<div class="bg-surface-container-high rounded-xl p-5 ghost-border ambient-shadow space-y-4 hover:border-primary/50 transition-colors cursor-pointer group">
+<div class="flex justify-between items-start">
+<span class="text-[10px] uppercase tracking-wider font-semibold text-tertiary bg-tertiary/10 px-2 py-0.5 rounded border border-tertiary/20">Dashboard</span>
+<span class="text-xs bg-surface-bright text-on-surface-variant px-2 py-0.5 rounded-full">Med</span>
+</div>
+<div>
+<h5 class="font-medium text-on-surface mb-1 group-hover:text-primary transition-colors">Core Metrics View</h5>
+<p class="text-xs text-on-surface-variant line-clamp-2">Display high-level aggregate data with date range filtering.</p>
+</div>
+<div class="flex justify-between items-center pt-2 border-t-[0.5px] border-outline-variant/10">
+<span class="flex items-center gap-1 text-xs text-on-surface-variant">
+<div class="w-1.5 h-1.5 rounded-full bg-outline-variant"></div> To Do
+                        </span>
+<div class="w-6 h-6 rounded-full bg-surface-bright flex items-center justify-center text-[10px] text-on-surface-variant border-[0.5px] border-outline-variant/30">+</div>
+</div>
+</div>
+</div>
+<!-- Column 2: V1 -->
+<div class="flex flex-col gap-4">
+<div class="border-t-2 border-secondary pt-3 flex justify-between items-center">
+<h4 class="font-headline font-semibold text-on-surface">Version 1 - Next</h4>
+<span class="font-mono text-xs bg-surface-container-high px-2 py-1 rounded text-on-surface-variant">12</span>
+</div>
+<!-- Card -->
+<div class="bg-surface-container-high rounded-xl p-5 ghost-border ambient-shadow space-y-4 hover:border-primary/50 transition-colors cursor-pointer group opacity-80">
+<div class="flex justify-between items-start">
+<span class="text-[10px] uppercase tracking-wider font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded border border-primary/20">AI</span>
+<span class="text-xs bg-surface-bright text-on-surface-variant px-2 py-0.5 rounded-full">High</span>
+</div>
+<div>
+<h5 class="font-medium text-on-surface mb-1 group-hover:text-primary transition-colors">Auto-Categorization</h5>
+<p class="text-xs text-on-surface-variant line-clamp-2">Use LLM to automatically tag and sort incoming user feedback.</p>
+</div>
+<div class="flex justify-between items-center pt-2 border-t-[0.5px] border-outline-variant/10">
+<span class="flex items-center gap-1 text-xs text-on-surface-variant">
+<div class="w-1.5 h-1.5 rounded-full bg-outline-variant"></div> To Do
+                        </span>
+</div>
+</div>
+</div>
+<!-- Column 3: Future -->
+<div class="flex flex-col gap-4">
+<div class="border-t-2 border-surface-bright pt-3 flex justify-between items-center">
+<h4 class="font-headline font-semibold text-on-surface-variant">Future - Later</h4>
+<span class="font-mono text-xs bg-surface-container-high px-2 py-1 rounded text-on-surface-variant opacity-50">5</span>
+</div>
+<!-- Card -->
+<div class="bg-surface-container-high rounded-xl p-5 ghost-border space-y-4 opacity-50">
+<div class="flex justify-between items-start">
+<span class="text-[10px] uppercase tracking-wider font-semibold text-on-surface-variant bg-surface-bright px-2 py-0.5 rounded">Mobile</span>
+<span class="text-xs bg-surface-bright text-on-surface-variant px-2 py-0.5 rounded-full">Med</span>
+</div>
+<div>
+<h5 class="font-medium text-on-surface mb-1">Native iOS App</h5>
+<p class="text-xs text-on-surface-variant line-clamp-2">Port core web functionality to native iOS experience.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 5: Row 4 - Analytics -->
+<section class="grid grid-cols-2 gap-6">
+<div class="bg-surface-container rounded-xl p-6 ghost-border">
+<h3 class="font-headline font-medium text-sm text-on-surface mb-6">Complexity Distribution</h3>
+<div class="space-y-4">
+<div class="flex h-8 w-full rounded overflow-hidden">
+<div class="bg-secondary/80 w-[20%] flex items-center justify-center text-xs font-mono text-on-secondary-container">L</div>
+<div class="bg-primary/80 w-[50%] flex items-center justify-center text-xs font-mono text-on-primary-container">M</div>
+<div class="bg-error/80 w-[30%] flex items-center justify-center text-xs font-mono text-on-error-container">H</div>
+</div>
+<div class="flex justify-between text-xs text-on-surface-variant font-mono">
+<span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-secondary/80"></div> Low (20%)</span>
+<span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-primary/80"></div> Medium (50%)</span>
+<span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-error/80"></div> High (30%)</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container rounded-xl p-6 ghost-border">
+<h3 class="font-headline font-medium text-sm text-on-surface mb-4">Category Breakdown</h3>
+<div class="space-y-3">
+<div class="flex items-center gap-4">
+<span class="text-xs w-20 text-on-surface-variant">Core UI</span>
+<div class="flex-grow h-1.5 bg-surface-container-low rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[40%] rounded-full"></div>
+</div>
+<span class="font-mono text-xs w-6 text-right">8</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-xs w-20 text-on-surface-variant">AI Engine</span>
+<div class="flex-grow h-1.5 bg-surface-container-low rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[30%] rounded-full"></div>
+</div>
+<span class="font-mono text-xs w-6 text-right">6</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-xs w-20 text-on-surface-variant">Auth &amp; Sec</span>
+<div class="flex-grow h-1.5 bg-surface-container-low rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-[20%] rounded-full"></div>
+</div>
+<span class="font-mono text-xs w-6 text-right">4</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+</body></html>

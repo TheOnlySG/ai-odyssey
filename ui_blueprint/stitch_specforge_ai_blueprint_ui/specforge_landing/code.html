@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SpecForge - Turn any idea into a complete dev blueprint</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed-variant": "#005137",
+                        "on-surface": "#e4e1e9",
+                        "surface-container-highest": "#35343a",
+                        "on-tertiary": "#003825",
+                        "surface": "#131318",
+                        "on-primary-fixed-variant": "#5a00c6",
+                        "surface-bright": "#39383e",
+                        "secondary-container": "#03b5d3",
+                        "on-primary-fixed": "#25005a",
+                        "surface-container": "#1f1f24",
+                        "tertiary-fixed": "#68fcbf",
+                        "on-surface-variant": "#ccc3d8",
+                        "on-secondary-fixed-variant": "#004e5c",
+                        "surface-dim": "#131318",
+                        "on-error-container": "#ffdad6",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed": "#002114",
+                        "on-tertiary-container": "#6bffc1",
+                        "secondary-fixed-dim": "#4cd7f6",
+                        "on-primary": "#3f008e",
+                        "primary-container": "#7c3aed",
+                        "inverse-on-surface": "#303035",
+                        "surface-tint": "#d2bbff",
+                        "tertiary-fixed-dim": "#45dfa4",
+                        "outline": "#958da1",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed": "#001f26",
+                        "surface-container-high": "#2a292f",
+                        "primary-fixed-dim": "#d2bbff",
+                        "primary-fixed": "#eaddff",
+                        "on-secondary": "#003640",
+                        "tertiary": "#45dfa4",
+                        "on-background": "#e4e1e9",
+                        "surface-variant": "#35343a",
+                        "on-secondary-container": "#00424e",
+                        "outline-variant": "#4a4455",
+                        "on-primary-container": "#ede0ff",
+                        "primary": "#d2bbff",
+                        "inverse-primary": "#732ee4",
+                        "surface-container-lowest": "#0e0e13",
+                        "secondary-fixed": "#acedff",
+                        "background": "#131318",
+                        "tertiary-container": "#007551",
+                        "secondary": "#4cd7f6",
+                        "inverse-surface": "#e4e1e9",
+                        "surface-container-low": "#1b1b20"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
+                    },
+                    "backgroundImage": {
+                        'dot-grid': 'radial-gradient(circle, #39383e 1px, transparent 1px)',
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #0D0D12; /* Fallback slightly darker than surface for depth */
+            color: #e4e1e9;
+        }
+        .dot-bg {
+            background-image: radial-gradient(circle, rgba(57, 56, 62, 0.4) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .glow-overlay {
+            background: radial-gradient(circle at 50% 30%, rgba(124, 58, 237, 0.15) 0%, transparent 60%);
+        }
+    </style>
+</head>
+<body class="font-body antialiased min-h-screen flex flex-col relative overflow-x-hidden dot-bg">
+<!-- Ambient Glow -->
+<div class="absolute inset-0 glow-overlay pointer-events-none z-0"></div>
+<!-- TopNavBar (Adapted for Landing Page / Intent: Suppressed primary nav since it's a linear entry, keeping brand & actions) -->
+<header class="bg-[#131318]/70 backdrop-blur-xl docked full-width top-0 z-50 border-b border-[#39383e]/20 flat no shadows fixed top-0 w-full flex justify-between items-center px-6 h-16 font-['Plus_Jakarta_Sans'] tracking-tight">
+<div class="flex items-center gap-6">
+<a class="text-xl font-bold tracking-tighter text-[#e4e1e9] flex items-center gap-1" href="#">
+                Spec<span class="text-primary-container material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">bolt</span>Forge
+            </a>
+<!-- Nav links from JSON suppressed on generic Landing per intent rule, showing only requested specific links -->
+<nav class="hidden md:flex gap-6 items-center ml-4 border-l border-outline-variant/30 pl-6 h-6">
+<a class="text-on-surface-variant hover:text-on-surface transition-colors duration-200 text-sm font-medium" href="#">History</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<a class="hidden md:flex items-center justify-center h-9 px-4 text-sm font-medium text-primary border-[0.5px] border-outline-variant/30 rounded-lg hover:bg-surface-container-low transition-colors" href="#">
+                Sign in
+            </a>
+<button class="flex items-center justify-center h-9 px-5 bg-gradient-to-br from-primary-container to-primary text-on-primary text-sm font-medium rounded-lg hover:opacity-90 transition-opacity">
+                Create New
+            </button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow flex flex-col items-center justify-center px-4 pt-32 pb-24 relative z-10">
+<!-- Hero Section -->
+<div class="max-w-4xl mx-auto text-center flex flex-col items-center gap-6">
+<!-- Eyebrow -->
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container border-[0.5px] border-outline-variant/20 shadow-[0_4px_32px_rgba(124,58,237,0.1)]">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-xs font-mono text-primary uppercase tracking-widest">AI-Powered · Free to try</span>
+</div>
+<!-- Headline -->
+<h1 class="font-headline text-[36px] md:text-6xl font-extrabold tracking-[-0.02em] leading-tight text-on-surface max-w-3xl">
+                Turn any idea into a complete dev blueprint
+            </h1>
+<!-- Subline -->
+<p class="text-base md:text-lg text-on-surface-variant max-w-2xl leading-relaxed">
+                PRD. Architecture. Roadmap. Investor pitch. All from one sentence.
+            </p>
+<!-- Input Area -->
+<div class="w-full max-w-[560px] mt-8 relative group">
+<!-- Outer Glow for Input -->
+<div class="absolute -inset-1 bg-gradient-to-r from-primary-container to-secondary opacity-0 group-focus-within:opacity-20 blur-xl transition-opacity duration-500 rounded-xl"></div>
+<div class="relative flex items-center bg-surface-container-lowest border-[0.5px] border-outline-variant/50 focus-within:border-primary/50 focus-within:shadow-[0_0_12px_rgba(210,187,255,0.1)] rounded-xl overflow-hidden transition-all duration-300">
+<span class="material-symbols-outlined text-on-surface-variant ml-4 absolute left-0 pointer-events-none">auto_awesome</span>
+<input class="w-full h-14 pl-12 pr-[130px] bg-transparent border-none text-on-surface text-base placeholder-on-surface-variant/50 focus:ring-0" placeholder="Describe your app idea..." type="text"/>
+<button class="absolute right-1.5 top-1.5 bottom-1.5 flex items-center gap-2 px-4 bg-gradient-to-r from-primary-container to-primary text-on-primary font-medium text-sm rounded-lg hover:opacity-90 transition-opacity">
+                        Generate
+                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<!-- Try Hint -->
+<div class="mt-4 flex flex-wrap justify-center gap-2 text-xs text-on-surface-variant font-mono">
+<span class="opacity-50">Try:</span>
+<button class="hover:text-primary transition-colors">"A minimalist habit tracker for designers"</button>
+<span class="opacity-30">|</span>
+<button class="hover:text-primary transition-colors">"An AI CRM for local plumbers"</button>
+</div>
+</div>
+<!-- Stats -->
+<div class="flex flex-wrap justify-center gap-4 mt-16 pt-8 border-t-[0.5px] border-outline-variant/20 w-full max-w-2xl">
+<div class="flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded-lg border-[0.5px] border-outline-variant/10">
+<span class="material-symbols-outlined text-secondary text-sm">inventory_2</span>
+<span class="text-sm font-medium text-on-surface">2,400+ blueprints</span>
+</div>
+<div class="flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded-lg border-[0.5px] border-outline-variant/10">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-sm">category</span>
+<span class="text-sm font-medium text-on-surface">8 output types</span>
+</div>
+<div class="flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded-lg border-[0.5px] border-outline-variant/10">
+<span class="material-symbols-outlined text-primary text-sm">timer</span>
+<span class="text-sm font-medium text-on-surface">&lt; 30 sec</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-[#0D0D12] full-width py-12 border-t border-[#39383e]/10 flat z-10">
+<div class="max-w-7xl mx-auto flex flex-col items-center gap-4">
+<div class="flex gap-6">
+<a class="font-['JetBrains_Mono'] text-[10px] uppercase tracking-widest text-[#4b5563] hover:text-[#d2bbff] transition-colors" href="#">Privacy</a>
+<a class="font-['JetBrains_Mono'] text-[10px] uppercase tracking-widest text-[#4b5563] hover:text-[#d2bbff] transition-colors" href="#">Terms</a>
+<a class="font-['JetBrains_Mono'] text-[10px] uppercase tracking-widest text-[#4b5563] hover:text-[#d2bbff] transition-colors" href="#">API</a>
+<a class="font-['JetBrains_Mono'] text-[10px] uppercase tracking-widest text-[#4b5563] hover:text-[#d2bbff] transition-colors" href="#">Changelog</a>
+</div>
+<p class="font-['JetBrains_Mono'] text-[10px] uppercase tracking-widest text-[#4b5563]">
+                © 2024 SpecForge AI. Kinetic Monolith Design.
+            </p>
+</div>
+</footer>
+</body></html>

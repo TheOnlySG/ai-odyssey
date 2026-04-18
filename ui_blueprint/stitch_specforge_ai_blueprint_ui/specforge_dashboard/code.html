@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SpecForge - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed-variant": "#005137",
+                        "on-surface": "#e4e1e9",
+                        "surface-container-highest": "#35343a",
+                        "on-tertiary": "#003825",
+                        "surface": "#131318",
+                        "on-primary-fixed-variant": "#5a00c6",
+                        "surface-bright": "#39383e",
+                        "secondary-container": "#03b5d3",
+                        "on-primary-fixed": "#25005a",
+                        "surface-container": "#1f1f24",
+                        "tertiary-fixed": "#68fcbf",
+                        "on-surface-variant": "#ccc3d8",
+                        "on-secondary-fixed-variant": "#004e5c",
+                        "surface-dim": "#131318",
+                        "on-error-container": "#ffdad6",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed": "#002114",
+                        "on-tertiary-container": "#6bffc1",
+                        "secondary-fixed-dim": "#4cd7f6",
+                        "on-primary": "#3f008e",
+                        "primary-container": "#7c3aed",
+                        "inverse-on-surface": "#303035",
+                        "surface-tint": "#d2bbff",
+                        "tertiary-fixed-dim": "#45dfa4",
+                        "outline": "#958da1",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed": "#001f26",
+                        "surface-container-high": "#2a292f",
+                        "primary-fixed-dim": "#d2bbff",
+                        "primary-fixed": "#eaddff",
+                        "on-secondary": "#003640",
+                        "tertiary": "#45dfa4",
+                        "on-background": "#e4e1e9",
+                        "surface-variant": "#35343a",
+                        "on-secondary-container": "#00424e",
+                        "outline-variant": "#4a4455",
+                        "on-primary-container": "#ede0ff",
+                        "primary": "#d2bbff",
+                        "inverse-primary": "#732ee4",
+                        "surface-container-lowest": "#0e0e13",
+                        "secondary-fixed": "#acedff",
+                        "background": "#131318",
+                        "tertiary-container": "#007551",
+                        "secondary": "#4cd7f6",
+                        "inverse-surface": "#e4e1e9",
+                        "surface-container-low": "#1b1b20"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"],
+                        "mono": ["JetBrains Mono"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body min-h-screen selection:bg-primary-container/30 selection:text-primary flex flex-col">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full flex justify-between items-center px-6 h-16 bg-[#131318]/70 backdrop-blur-xl docked full-width top-0 z-50 border-b border-[#39383e]/20 flat no shadows text-sm">
+<div class="flex items-center gap-6">
+<div class="text-xl font-bold tracking-tighter text-[#e4e1e9] flex items-center gap-1 font-headline">
+<span class="material-symbols-outlined text-primary" data-icon="bolt" data-weight="fill" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                SpecForge
+            </div>
+<div class="hidden md:flex gap-6 font-['Plus_Jakarta_Sans'] tracking-tight">
+<a class="text-[#d2bbff] border-b-2 border-[#7c3aed] pb-1 flex items-center gap-2 hover:bg-[#1f1f24] transition-colors duration-200" href="#">Dashboard</a>
+<a class="text-[#94a3b8] hover:text-[#e4e1e9] flex items-center gap-2 hover:bg-[#1f1f24] transition-colors duration-200" href="#">History</a>
+<a class="text-[#94a3b8] hover:text-[#e4e1e9] flex items-center gap-2 hover:bg-[#1f1f24] transition-colors duration-200" href="#">Resources</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex gap-2">
+<button class="text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+<button class="px-4 py-2 bg-gradient-to-br from-primary-container to-primary text-on-primary rounded font-medium hover:opacity-90 transition-opacity">Create New</button>
+<div class="h-8 w-8 rounded-full bg-surface-variant border-[0.5px] border-outline-variant overflow-hidden shrink-0">
+<img alt="User avatar" class="w-full h-full object-cover" data-alt="Portrait of young woman with short dark hair in professional setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCk-Hc_ajLs9aLDMVZ1Mxk-KHHu0Tyck6683l2w0jIxYw--iT6NfohtM0dKRmJJUO9_sBkqL9aAfV_d_aYCFkintt_dxfucJH0lZDjiS2jkK3oDimu4LCz78VDFBnhtRaU2Nq7bqUxqOKOWJsvI7dhLPQBzvBK85QASHUc-GUijEAbyli33xPWUW9Lj28u48BEzTDMkR0RoEQX-UrlRrobWra8tHYo4ev20xl_6hHn7U0c5uIVWKVtD7Ge3pieKBgZbaCsL3_MqQWkf"/>
+</div>
+</div>
+</nav>
+<!-- SideNavBar (Hidden on md for Dashboard to focus on content, but keeping structure as requested if needed, opting to hide it to match "Dashboard" full width feel in instructions) -->
+<main class="flex-1 max-w-[1600px] mx-auto w-full pt-24 px-6 pb-24">
+<!-- Context Bar -->
+<header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
+<div class="flex items-center gap-3 bg-surface-container-low px-4 py-2 rounded-full border-[0.5px] border-outline-variant/30">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="psychology">psychology</span>
+<span class="text-sm text-on-surface-variant">AI tool for therapist patient tracking</span>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 rounded border-[0.5px] border-outline-variant/30 text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2 text-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="refresh">refresh</span>
+                    Regenerate
+                </button>
+<button class="px-4 py-2 rounded border-[0.5px] border-outline-variant/30 text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2 text-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+                    Edit Idea
+                </button>
+<button class="px-4 py-2 rounded border-[0.5px] border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 transition-colors flex items-center gap-2 text-sm font-medium">
+                    Ask AI Co-Founder ✦
+                </button>
+</div>
+</header>
+<!-- Metrics Row -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+<div class="bg-surface-container p-6 rounded-xl border-[0.5px] border-outline-variant/10 flex flex-col justify-between min-h-[120px]">
+<div class="text-[10px] uppercase tracking-widest text-on-surface-variant font-mono">Health Score</div>
+<div class="text-4xl font-headline font-bold tracking-tighter mt-2 text-secondary">78<span class="text-lg text-on-surface-variant font-body">/100</span></div>
+</div>
+<div class="bg-surface-container p-6 rounded-xl border-[0.5px] border-outline-variant/10 flex flex-col justify-between min-h-[120px]">
+<div class="text-[10px] uppercase tracking-widest text-on-surface-variant font-mono">Build Time</div>
+<div class="text-4xl font-headline font-bold tracking-tighter mt-2 text-on-surface">6-8 <span class="text-lg text-on-surface-variant font-body font-normal">wks</span></div>
+</div>
+<div class="bg-surface-container p-6 rounded-xl border-[0.5px] border-outline-variant/10 flex flex-col justify-between min-h-[120px]">
+<div class="text-[10px] uppercase tracking-widest text-on-surface-variant font-mono">Competitors</div>
+<div class="text-4xl font-headline font-bold tracking-tighter mt-2 text-on-surface">4</div>
+</div>
+<div class="bg-surface-container p-6 rounded-xl border-[0.5px] border-outline-variant/10 flex flex-col justify-between min-h-[120px]">
+<div class="text-[10px] uppercase tracking-widest text-on-surface-variant font-mono">MVP Features</div>
+<div class="text-4xl font-headline font-bold tracking-tighter mt-2 text-on-surface">7</div>
+</div>
+</div>
+<!-- Radars Row -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
+<!-- Concept Radar (Simulated) -->
+<div class="bg-surface-container p-6 rounded-xl border-[0.5px] border-outline-variant/10 h-[400px] flex flex-col">
+<h3 class="font-headline text-lg font-semibold mb-6 flex items-center justify-between">
+                    Concept Viability
+                    <span class="material-symbols-outlined text-on-surface-variant" data-icon="radar">radar</span>
+</h3>
+<div class="flex-1 relative flex items-center justify-center">
+<!-- Abstract Radar SVG Representation -->
+<svg class="w-full h-full max-w-[280px] max-h-[280px]" fill="none" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<!-- Grid Lines -->
+<polygon fill="none" points="50,10 85,30 85,70 50,90 15,70 15,30" stroke="#35343a" stroke-width="0.5"></polygon>
+<polygon fill="none" points="50,30 67,40 67,60 50,70 33,60 33,40" stroke="#35343a" stroke-width="0.5"></polygon>
+<line stroke="#35343a" stroke-width="0.5" x1="50" x2="50" y1="50" y2="10"></line>
+<line stroke="#35343a" stroke-width="0.5" x1="50" x2="85" y1="50" y2="30"></line>
+<line stroke="#35343a" stroke-width="0.5" x1="50" x2="85" y1="50" y2="70"></line>
+<line stroke="#35343a" stroke-width="0.5" x1="50" x2="50" y1="50" y2="90"></line>
+<line stroke="#35343a" stroke-width="0.5" x1="50" x2="15" y1="50" y2="70"></line>
+<line stroke="#35343a" stroke-width="0.5" x1="50" x2="15" y1="50" y2="30"></line>
+<!-- Data Area -->
+<polygon fill="rgba(76, 215, 246, 0.1)" points="50,20 75,35 60,65 50,85 25,60 30,35" stroke="#d2bbff" stroke-width="1.5"></polygon>
+<!-- Dots -->
+<circle cx="50" cy="20" fill="#d2bbff" r="2"></circle>
+<circle cx="75" cy="35" fill="#d2bbff" r="2"></circle>
+<circle cx="60" cy="65" fill="#d2bbff" r="2"></circle>
+<circle cx="50" cy="85" fill="#d2bbff" r="2"></circle>
+<circle cx="25" cy="60" fill="#d2bbff" r="2"></circle>
+<circle cx="30" cy="35" fill="#d2bbff" r="2"></circle>
+</svg>
+<!-- Labels -->
+<span class="absolute top-0 text-[10px] text-on-surface-variant font-mono">Utility</span>
+<span class="absolute right-0 top-1/4 text-[10px] text-on-surface-variant font-mono">Market Size</span>
+<span class="absolute right-0 bottom-1/4 text-[10px] text-on-surface-variant font-mono">Defensibility</span>
+<span class="absolute bottom-0 text-[10px] text-on-surface-variant font-mono">Monetization</span>
+<span class="absolute left-0 bottom-1/4 text-[10px] text-on-surface-variant font-mono">Tech Risk</span>
+<span class="absolute left-0 top-1/4 text-[10px] text-on-surface-variant font-mono">Urgency</span>
+</div>
+</div>
+<!-- Competitor Analysis -->
+<div class="bg-surface-container p-6 rounded-xl border-[0.5px] border-outline-variant/10 h-[400px] flex flex-col">
+<h3 class="font-headline text-lg font-semibold mb-6 flex items-center justify-between">
+                    Competitor Landscape
+                    <span class="material-symbols-outlined text-on-surface-variant" data-icon="compare">compare</span>
+</h3>
+<div class="flex flex-col gap-4 overflow-y-auto pr-2">
+<!-- Notion -->
+<div class="bg-surface-container-high p-4 rounded-lg flex flex-col gap-3">
+<div class="flex justify-between items-center">
+<span class="font-medium">Notion</span>
+<span class="text-xs text-on-surface-variant px-2 py-1 bg-surface-container-highest rounded">Generalist</span>
+</div>
+<div class="flex gap-2 text-xs">
+<span class="text-error bg-error/10 px-2 py-1 rounded border-[0.5px] border-error/20">Poor HIPAA compliance</span>
+<span class="text-tertiary bg-tertiary/10 px-2 py-1 rounded border-[0.5px] border-tertiary/20">Highly flexible</span>
+</div>
+</div>
+<!-- Fibery -->
+<div class="bg-surface-container-high p-4 rounded-lg flex flex-col gap-3">
+<div class="flex justify-between items-center">
+<span class="font-medium">Fibery</span>
+<span class="text-xs text-on-surface-variant px-2 py-1 bg-surface-container-highest rounded">Product Workspace</span>
+</div>
+<div class="flex gap-2 text-xs">
+<span class="text-error bg-error/10 px-2 py-1 rounded border-[0.5px] border-error/20">Steep learning curve</span>
+<span class="text-tertiary bg-tertiary/10 px-2 py-1 rounded border-[0.5px] border-tertiary/20">Deep relations</span>
+</div>
+</div>
+<!-- Coda -->
+<div class="bg-surface-container-high p-4 rounded-lg flex flex-col gap-3">
+<div class="flex justify-between items-center">
+<span class="font-medium">Coda</span>
+<span class="text-xs text-on-surface-variant px-2 py-1 bg-surface-container-highest rounded">Doc App</span>
+</div>
+<div class="flex gap-2 text-xs">
+<span class="text-error bg-error/10 px-2 py-1 rounded border-[0.5px] border-error/20">Mobile app limited</span>
+<span class="text-tertiary bg-tertiary/10 px-2 py-1 rounded border-[0.5px] border-tertiary/20">Strong automations</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Tab Panel -->
+<div class="bg-surface-container rounded-xl border-[0.5px] border-outline-variant/10 overflow-hidden">
+<!-- Tab Headers -->
+<div class="flex border-b-[0.5px] border-outline-variant/20 bg-surface-container-low px-4">
+<button class="px-6 py-4 text-primary border-b-2 border-primary font-medium text-sm">PRD</button>
+<button class="px-6 py-4 text-on-surface-variant hover:text-on-surface transition-colors text-sm">Features</button>
+<button class="px-6 py-4 text-on-surface-variant hover:text-on-surface transition-colors text-sm">Architecture</button>
+<button class="px-6 py-4 text-on-surface-variant hover:text-on-surface transition-colors text-sm">GTM Strategy</button>
+</div>
+<!-- Tab Content (PRD Active) -->
+<div class="p-6 md:p-10">
+<div class="max-w-4xl">
+<h2 class="text-3xl font-headline font-bold tracking-tight mb-8">Product Requirements Document v1.0</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+<!-- Problem Statement -->
+<div>
+<h4 class="text-xs uppercase tracking-widest text-on-surface-variant font-mono mb-3">Problem Statement</h4>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                                Therapists spend an average of 15 minutes per session writing notes. Existing generalized tools lack specific psychiatric frameworks, and specialized tools are clunky and lack modern AI summarization, leading to clinician burnout and less precise patient continuity.
+                            </p>
+</div>
+<!-- Target Audience -->
+<div>
+<h4 class="text-xs uppercase tracking-widest text-on-surface-variant font-mono mb-3">Target Persona</h4>
+<div class="bg-surface-container-high p-4 rounded-lg flex items-start gap-4 border-[0.5px] border-outline-variant/10">
+<div class="w-12 h-12 rounded bg-surface-variant overflow-hidden shrink-0">
+<img alt="Persona" class="w-full h-full object-cover grayscale opacity-80" data-alt="Middle aged female doctor in clinic setting looking thoughtful" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuIEAYboykcrYzk9eLmUsRYgnyJ2QzAj-OvNMNZJe8MIswPWKqFAF8n3bLyg-0MD50Cbs77KQi9q1PCQ4rWpZiXX8CpUHunvtlaz1zbxPIPH5vxa6fGNJjzeYcdFSYDnIy_e_7A1_AWr4XXPLxYjTc_zpJyaygnfi6WMnLO0wk1EwIS31aChIrG5Kms0ZDt4Q4tLAuRdGKxxWE4kt4obrGMjrkGywEaPRZDYvUsPbXGgQTN6G_FDuaqWNdUGn39IQSjKpzuPoriRro"/>
+</div>
+<div>
+<div class="font-medium text-sm">Dr. Sarah Jenkins</div>
+<div class="text-xs text-on-surface-variant mt-1">Private Practice Therapist. Sees 25 patients/week. Values minimal clicking and high security.</div>
+</div>
+</div>
+</div>
+</div>
+<h4 class="text-xs uppercase tracking-widest text-on-surface-variant font-mono mb-4">Success Metrics</h4>
+<div class="bg-surface-container-lowest rounded-lg border-[0.5px] border-outline-variant/10 overflow-hidden">
+<table class="w-full text-sm text-left">
+<thead class="bg-surface-container-low text-on-surface-variant text-xs uppercase font-mono">
+<tr>
+<th class="px-6 py-3 font-normal">Metric</th>
+<th class="px-6 py-3 font-normal">Baseline</th>
+<th class="px-6 py-3 font-normal">Target</th>
+</tr>
+</thead>
+<tbody class="divide-y-[0.5px] divide-outline-variant/10 font-mono text-xs">
+<tr class="bg-surface-container">
+<td class="px-6 py-4 text-on-surface">Time per session note</td>
+<td class="px-6 py-4 text-on-surface-variant">15 mins</td>
+<td class="px-6 py-4 text-tertiary">&lt; 4 mins</td>
+</tr>
+<tr class="bg-surface-container-low">
+<td class="px-6 py-4 text-on-surface">HIPAA Compliance Check</td>
+<td class="px-6 py-4 text-on-surface-variant">Manual</td>
+<td class="px-6 py-4 text-tertiary">Automated</td>
+</tr>
+<tr class="bg-surface-container">
+<td class="px-6 py-4 text-on-surface">Daily Active Usage (DAU)</td>
+<td class="px-6 py-4 text-on-surface-variant">N/A</td>
+<td class="px-6 py-4 text-tertiary">&gt; 80% workdays</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Export Bar -->
+<div class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-surface-container-high/90 backdrop-blur-md px-2 py-2 rounded-full border-[0.5px] border-outline-variant/30 flex items-center gap-1 shadow-[0_8px_32px_rgba(0,0,0,0.4)] z-40">
+<button class="px-4 py-2 rounded-full text-xs font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="picture_as_pdf">picture_as_pdf</span>
+            PDF
+        </button>
+<div class="w-[1px] h-4 bg-outline-variant/30 mx-1"></div>
+<button class="px-4 py-2 rounded-full text-xs font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="markdown">markdown</span>
+            Markdown
+        </button>
+<div class="w-[1px] h-4 bg-outline-variant/30 mx-1"></div>
+<button class="px-4 py-2 rounded-full text-xs font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="folder_zip">folder_zip</span>
+            ZIP
+        </button>
+<div class="w-[1px] h-4 bg-outline-variant/30 mx-1"></div>
+<button class="px-4 py-2 rounded-full text-xs font-medium bg-primary-container text-on-primary hover:bg-primary transition-colors flex items-center gap-2 shadow-[0_0_12px_rgba(124,58,237,0.3)]">
+<span class="material-symbols-outlined text-[16px]" data-icon="link">link</span>
+            Copy Link
+        </button>
+</div>
+<!-- Footer -->
+<footer class="mt-auto py-12 border-t border-[#39383e]/10 bg-[#0D0D12] w-full text-center">
+<div class="max-w-7xl mx-auto flex flex-col items-center gap-4">
+<div class="flex gap-6 font-['JetBrains_Mono'] text-[10px] uppercase tracking-widest text-[#4b5563]">
+<a class="hover:text-[#d2bbff] transition-colors" href="#">Privacy</a>
+<a class="hover:text-[#d2bbff] transition-colors" href="#">Terms</a>
+<a class="hover:text-[#d2bbff] transition-colors" href="#">API</a>
+<a class="hover:text-[#d2bbff] transition-colors" href="#">Changelog</a>
+</div>
+<p class="font-['JetBrains_Mono'] text-[10px] uppercase tracking-widest text-[#4b5563]">© 2024 SpecForge AI. Kinetic Monolith Design.</p>
+</div>
+</footer>
+</body></html>
