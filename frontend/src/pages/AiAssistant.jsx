@@ -16,7 +16,7 @@ const AiAssistant = () => {
 <span className="material-symbols-outlined text-on-primary text-xl" data-icon="square" data-weight="fill">square</span>
 </div>
 <div>
-<h1 className="text-[#d2bbff] font-bold font-headline tracking-tight">SpecForge</h1>
+<h1 className="text-[#d2bbff] font-bold font-headline tracking-tight">Origin</h1>
 <p className="text-xs text-on-surface-variant">AI Architect</p>
 </div>
 </div>
@@ -139,7 +139,7 @@ const AiAssistant = () => {
 <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>view_in_ar</span>
 </div>
 <div>
-<div className="text-xs font-bold text-[#e4e1e9]">SpecForge</div>
+<div className="text-xs font-bold text-[#e4e1e9]">Origin</div>
 <div className="text-[10px] text-on-surface-variant uppercase tracking-widest">Precision Forge</div>
 </div>
 </div>
@@ -151,3 +151,4 @@ const AiAssistant = () => {
 };
 
 export default AiAssistant;
+

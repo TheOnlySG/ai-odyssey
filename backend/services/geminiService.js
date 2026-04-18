@@ -122,7 +122,7 @@ const schema = {
 };
 
 async function generateBlueprint(ideaPrompt) {
-    const prompt = `You are an expert product manager, architect, and startup co-founder using SpecForge (Precision Instrumentation for Startups). 
+    const prompt = `You are an expert product manager, architect, and startup co-founder using Origin (Precision Instrumentation for Startups). 
 A user has submitted the following startup/product idea: "${ideaPrompt}".
 
 Analyze this idea thoroughly and generate a comprehensive software blueprint. Fill out the structured data payload completely with realistic, professional tech-startup level analysis. 
@@ -139,7 +139,7 @@ For the Engineering Blueprint (Technical Spec):
 - Detail required 3rd-party API integrations (Auth, Payments, AI, etc.).
 - Elaborate on a robust Security Model (Encryption, Auth, Compliance).
 
-- Ensure all sections are useful, detailed, and highlights how SpecForge instrumentation helps define the path to MVP.`;
+- Ensure all sections are useful, detailed, and highlights how Origin instrumentation helps define the path to MVP.`;
 
     const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash',

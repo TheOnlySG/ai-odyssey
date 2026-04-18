@@ -20,7 +20,7 @@ const Dashboard = () => {
 <div className="flex items-center gap-6">
 <div className="text-xl font-bold tracking-tighter text-[#e4e1e9] flex items-center gap-1 font-headline">
 <span className="material-symbols-outlined text-primary" style={{fontVariationSettings: "'FILL' 1"}}>bolt</span>
-                SpecForge
+                Origin
             </div>
 </div>
 <Link className="px-4 py-2 bg-gradient-to-br from-primary-container to-primary text-on-primary rounded font-medium hover:opacity-90 transition-opacity" to="/">Create New</Link>
@@ -75,7 +75,7 @@ const Dashboard = () => {
 <div className="flex items-center gap-6">
 <div className="text-xl font-bold tracking-tighter text-[#e4e1e9] flex items-center gap-1 font-headline">
 <span className="material-symbols-outlined text-primary" style={{fontVariationSettings: "'FILL' 1"}}>bolt</span>
-                SpecForge
+                Origin
             </div>
 <div className="hidden md:flex gap-6 font-['Plus_Jakarta_Sans'] tracking-tight">
 <Link className="text-[#d2bbff] border-b-2 border-[#7c3aed] pb-1" to="/dashboard">Dashboard</Link>
@@ -118,7 +118,7 @@ const Dashboard = () => {
 <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>view_in_ar</span>
 </div>
 <div>
-<div className="text-xs font-bold text-[#e4e1e9]">SpecForge</div>
+<div className="text-xs font-bold text-[#e4e1e9]">Origin</div>
 <div className="text-[10px] text-on-surface-variant uppercase tracking-widest">Precision Forge</div>
 </div>
 </div>
@@ -327,7 +327,7 @@ const Dashboard = () => {
                         Strategic Hypothesis
                     </h4>
                     <p className="text-2xl font-headline font-semibold text-on-surface leading-snug">
-                       "{data.prd?.coreHypothesis || 'Forging core bet...'}"
+                       &ldquo;{data.prd?.coreHypothesis || 'Forging core bet...'}&rdquo;
                     </p>
                 </div>
                 <div className="space-y-4">
@@ -528,3 +528,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+

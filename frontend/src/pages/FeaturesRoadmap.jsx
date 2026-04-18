@@ -8,7 +8,7 @@ const FeaturesRoadmap = () => {
 {/* TopNavBar Shared Component */}
 <nav className="bg-[#131318]/70 backdrop-blur-md font-['Plus_Jakarta_Sans'] text-sm tracking-tight docked full-width top-0 z-50 border-b-[0.5px] border-white/10 flat no shadows flex justify-between items-center px-8 h-16 w-full shrink-0">
 <div className="flex items-center gap-8">
-<div className="text-xl font-black tracking-tighter text-[#e4e1e9]">SpecForge</div>
+<div className="text-xl font-black tracking-tighter text-[#e4e1e9]">Origin</div>
 <div className="hidden md:flex items-center bg-surface-container-low rounded-full px-4 py-1.5 ghost-border text-on-surface-variant w-64 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/20 transition-all">
 <span className="material-symbols-outlined text-lg mr-2">search</span>
 <input className="bg-transparent border-none outline-none text-sm w-full placeholder-on-surface-variant/50 font-body text-on-surface" placeholder="Search blueprints..." type="text"/>
@@ -65,7 +65,7 @@ const FeaturesRoadmap = () => {
 <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>view_in_ar</span>
 </div>
 <div>
-<div className="text-xs font-bold text-[#e4e1e9]">SpecForge</div>
+<div className="text-xs font-bold text-[#e4e1e9]">Origin</div>
 <div className="text-[10px] text-on-surface-variant uppercase tracking-widest">Precision Forge</div>
 </div>
 </div>
@@ -292,3 +292,4 @@ const FeaturesRoadmap = () => {
 };
 
 export default FeaturesRoadmap;
+

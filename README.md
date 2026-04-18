@@ -1,21 +1,21 @@
-# ⚡ SpecForge: Precision Instrumentation for Startups
+# ⚡ Origin: One Idea. Complete Blueprint.
 
-**SpecForge** is a high-fidelity, AI-driven platform designed to transform raw startup ideas into comprehensive, engineer-ready product blueprints in seconds. It bridges the gap between a founder's vision and a developer's execution.
+**Origin** is a high-fidelity, AI-driven platform designed to transform raw startup ideas into comprehensive, engineer-ready product blueprints in seconds. It bridges the gap between a founder's vision and a developer's execution.
 
 ---
 
-## 🏆 For the Judges: Why SpecForge?
+## 🏆 For the Judges: Why Origin?
 
-In the current startup ecosystem, the first 48 hours of an idea are lost to manual PRD writing, messy competitor research, and technical guesswork. **SpecForge automates the "Founder's Fatigue"** by providing:
+In the current startup ecosystem, the first 48 hours of an idea are lost to manual PRD writing, messy competitor research, and technical guesswork. **Origin automates the "Founder's Fatigue"** by providing:
 1.  **AI-Generated PRDs**: Deep narratives, critical user pain points, and strategic market gap analysis.
 2.  **Engineering Blueprints**: Direct, engineer-ready tech stack recommendations, data schemas, and API matrices.
 3.  **Visual Analytics**: Real-time viability scores and build-time estimations visualized through high-end instrumentation.
 
 ---
 
-## 🛠️ The SpecForge Technical Stack
+## 🛠️ The Origin Technical Stack
 
-We built SpecForge using a modern, scalable full-stack architecture focused on precision and performance:
+We built Origin using a modern, scalable full-stack architecture focused on precision and performance:
 
 ### **Frontend (The Instrumentation UI)**
 - **React + Vite**: For a lightning-fast developer experience and optimized production bundles.
@@ -36,7 +36,7 @@ We built SpecForge using a modern, scalable full-stack architecture focused on p
 Goes beyond simple text. It generates multi-paragraph narratives that weave your product's name into a professional problem statement, alongside specific risk mitigation strategies.
 
 ### 2. **Technical Deep-Dive**
-Unlike generic AI tools, SpecForge provides a **Technical Specification (T-PRD)** including:
+Unlike generic AI tools, Origin provides a **Technical Specification (T-PRD)** including:
 - **Tech Stack Recommendations** (Frontend, Backend, DB, Infra).
 - **Primary Data Entities** (Schema suggestions).
 - **Service Matrix** (Required 3rd party APIs).
@@ -88,7 +88,8 @@ npm run dev
 ---
 
 ## 🎨 Design Philosophy: "The Precision Forge"
-SpecForge isn't just a dashboard; it's a tool. The UI mimics professional instrumentation panels, using high-contrast typography, subtle micro-animations, and a "rising from zero" data entry effect to make the AI's complex analysis feel alive and impactful.
+Origin isn't just a dashboard; it's a tool. The UI mimics professional instrumentation panels, using high-contrast typography, subtle micro-animations, and a "rising from zero" data entry effect to make the AI's complex analysis feel alive and impactful.
 
 ---
 *Built with ❤️ for founders who want to build faster.*
+

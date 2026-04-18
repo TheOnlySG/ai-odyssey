@@ -38,8 +38,8 @@ const Landing = () => {
       {/* TopNavBar */}
       <header className="bg-[#131318]/70 backdrop-blur-xl docked full-width top-0 z-50 border-b border-[#39383e]/20 flat no shadows fixed w-full flex justify-between items-center px-6 h-16 font-headline tracking-tight">
         <div className="flex items-center gap-6">
-          <Link className="text-xl font-bold tracking-tighter text-[#e4e1e9] flex items-center gap-1" to="/">
-            Spec<span className="text-primary-container material-symbols-outlined text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>bolt</span>Forge
+          <Link className="text-xl font-bold tracking-tighter text-[#e4e1e9] flex items-center gap-0.5" to="/">
+            Ori<span className="text-primary-container material-symbols-outlined text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>bolt</span>gin
           </Link>
           <nav className="hidden md:flex gap-6 items-center ml-4 border-l border-outline-variant/30 pl-6 h-6">
             <Link className="text-on-surface-variant hover:text-on-surface transition-colors duration-200 text-sm font-medium" to="/history">History</Link>
@@ -66,13 +66,14 @@ const Landing = () => {
           </div>
 
           {/* Headline */}
-          <h1 className="font-headline text-[36px] md:text-6xl font-extrabold tracking-[-0.02em] leading-tight text-on-surface max-w-3xl">
-            Turn any idea into a complete dev blueprint
+          <h1 className="font-headline text-[48px] md:text-7xl font-extrabold tracking-[-0.03em] leading-[1.1] text-on-surface max-w-4xl">
+            One Idea. <br/>
+            <span className="text-primary tracking-tight">Complete Blueprint.</span>
           </h1>
 
           {/* Subline */}
-          <p className="text-base md:text-lg text-on-surface-variant max-w-2xl leading-relaxed">
-            PRD. Architecture. Roadmap. Investor pitch. All from one sentence.
+          <p className="text-base md:text-xl text-on-surface-variant max-w-2xl leading-relaxed mt-2">
+            The origin point for your next venture. Generate PRDs, Architecture, and Roadmaps in seconds.
           </p>
 
           {/* Input Area */}
@@ -147,7 +148,7 @@ const Landing = () => {
             <Link className="font-mono text-[10px] uppercase tracking-widest text-[#4b5563] hover:text-[#d2bbff] transition-colors" to="/">Changelog</Link>
           </div>
           <p className="font-mono text-[10px] uppercase tracking-widest text-[#4b5563]">
-            © 2024 SpecForge AI. Kinetic Monolith Design.
+            © 2024 Origin AI. Kinetic Monolith Design.
           </p>
         </div>
       </footer>
@@ -156,3 +157,4 @@ const Landing = () => {
 };
 
 export default Landing;
+
