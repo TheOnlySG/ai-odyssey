@@ -1,0 +1,30 @@
+.animated-gradient-text {
+  position: relative;
+  display: inline-block;
+  font-weight: 600;
+  overflow: hidden;
+}
+
+.text-content {
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-animation linear infinite;
+}
+
+.gradient-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-size: 300% 100%;
+  animation: gradient-animation linear infinite;
+  mask-image: linear-gradient(black, black);
+  -webkit-mask-image: linear-gradient(black, black);
+}
+
+@keyframes gradient-animation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}

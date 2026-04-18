@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAppContext } from '../context/AppContext';
 import { generateBlueprint } from '../apiService';
 import NetflixIntro from './components/NetflixIntro';
-import ColorBends from './components/ColorBends';
+import LiquidEther from './components/LiquidEther';
+import GradientText from './components/GradientText';
 
 const Landing = () => {
   const [idea, setIdea] = useState('');
@@ -47,16 +48,18 @@ const Landing = () => {
             transition={{ duration: 1 }}
             className="flex flex-col min-h-screen relative"
           >
-            {/* Ambient Animated Background */}
-            <ColorBends />
+            {/* Ambient Animated Background - Only loads after intro */}
+            <div className="absolute inset-0 z-0">
+              <LiquidEther colors={['#5227FF', '#FF9FFC', '#B497CF']} />
+            </div>
             
             {/* TopNavBar */}
             <header className="bg-transparent docked full-width top-0 z-50 border-b border-[#39383e]/10 flat no shadows fixed w-full flex justify-between items-center px-6 h-16 font-headline tracking-tight backdrop-blur-sm">
               <div className="flex items-center gap-6">
                 <Link className="text-xl font-bold tracking-tighter text-[#e4e1e9] flex items-center gap-0.5 group" style={{ fontFamily: "'Bebas Neue', cursive" }} to="/">
-                  <span className="text-2xl tracking-widest transition-all duration-300 group-hover:tracking-[0.15em]">ORI</span>
-                  <span className="text-primary material-symbols-outlined text-2xl animate-pulse" style={{ fontVariationSettings: "'FILL' 1" }}>bolt</span>
-                  <span className="text-2xl tracking-widest transition-all duration-300 group-hover:tracking-[0.15em]">GIN</span>
+                  <span className="text-2xl tracking-widest transition-all duration-300 group-hover:tracking-[0.15em] text-[#A855F7]">ORI</span>
+                  <span className="text-[#A855F7] material-symbols-outlined text-2xl animate-pulse" style={{ fontVariationSettings: "'FILL' 1" }}>bolt</span>
+                  <span className="text-2xl tracking-widest transition-all duration-300 group-hover:tracking-[0.15em] text-[#A855F7]">GIN</span>
                 </Link>
                 <nav className="hidden md:flex gap-6 items-center ml-4 border-l border-outline-variant/30 pl-6 h-6">
                   <Link className="text-on-surface-variant hover:text-on-surface transition-colors duration-200 text-sm font-medium" to="/history">History</Link>
@@ -92,12 +95,26 @@ const Landing = () => {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.3 }}
-                  className="font-headline text-[48px] md:text-8xl font-extrabold tracking-[-0.04em] leading-[0.95] text-on-surface max-w-5xl uppercase"
+                  className="font-headline text-[72px] md:text-[12rem] font-extrabold tracking-[-0.04em] leading-[0.8] text-[#A855F7] max-w-5xl uppercase drop-shadow-[0_0_80px_rgba(168,85,247,0.6)]"
                   style={{ fontFamily: "'Bebas Neue', cursive" }}
                 >
-                  One Idea. <br/>
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-[#00d2ff] to-primary bg-300% animate-gradient-x">Complete Blueprint.</span>
+                  ORIGIN
                 </motion.h1>
+
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                  className="mt-[-1rem] relative z-20"
+                >
+                  <GradientText 
+                    colors={["#00D2FF", "#3B82F6", "#00D2FF"]} 
+                    animationSpeed={6} 
+                    className="text-2xl md:text-5xl font-black uppercase tracking-widest"
+                  >
+                    One Idea. Complete Blueprint.
+                  </GradientText>
+                </motion.div>
 
                 {/* Subline */}
                 <motion.p 
