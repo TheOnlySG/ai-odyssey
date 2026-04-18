@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import { generateBlueprint } from '../apiService';
@@ -7,6 +7,9 @@ const Dashboard = () => {
     const { activeBlueprint, setActiveBlueprint, isGenerating, setIsGenerating } = useAppContext();
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('PRD');
+    const [activeModal, setActiveModal] = useState(null); // 'health' | 'build' | 'competitors'
+    const [exportOpen, setExportOpen] = useState(false);
+    const [copyDone, setCopyDone] = useState(false);
 
     const data = activeBlueprint?.data;
     const idea = activeBlueprint?.idea;
@@ -67,6 +70,100 @@ const Dashboard = () => {
 
     const mvpFeatures = (data.features || []).filter(f => f.phase === 'MVP');
 
+    // ── Export Handlers ──
+    const handleExportPDF = () => {
+        setExportOpen(false);
+        window.print();
+    };
+
+    const handleExportMarkdown = () => {
+        setExportOpen(false);
+        const prd = data.prd || {};
+        const metrics = data.metrics || {};
+        const radar = data.radarAnalysis || {};
+        const features = data.features || [];
+        const competitors = data.competitors || [];
+
+        let md = `# ${prd.productName || 'Blueprint'}
+> ${prd.tagline || ''}
+
+---
+
+## 📊 Metrics
+| Metric | Value |
+|---|---|
+| Health Score | ${metrics.healthScore}/100 |
+| Build Time | ${metrics.buildTimeWeeks} weeks |
+| Big Players | ${metrics.competitorsCount} |
+| MVP Features | ${metrics.mvpFeaturesCount} |
+
+---
+
+## 📄 Problem Statement
+${prd.problemStatement || ''}
+
+## 🎯 Target Persona
+**${prd.targetPersona || ''}**
+${prd.targetPersonaImageText || ''}
+
+## 😖 User Pain Points
+${(prd.userPainPoints || []).map(p => `- ${p}`).join('\n')}
+
+## 📈 Market Gap
+${prd.marketGap || ''}
+
+## 🚀 Market Opportunity
+${prd.marketOpportunity || ''}
+
+## 💡 Core Hypothesis
+> ${prd.coreHypothesis || ''}
+
+## 🔭 Long-Term Vision
+${prd.longTermVision || ''}
+
+---
+
+## ⚙️ Tech Stack
+| Layer | Technology |
+|---|---|
+| Frontend | ${prd.technicalSpec?.techStack?.frontend || ''} |
+| Backend | ${prd.technicalSpec?.techStack?.backend || ''} |
+| Database | ${prd.technicalSpec?.techStack?.database || ''} |
+| Infrastructure | ${prd.technicalSpec?.techStack?.infrastructure || ''} |
+
+---
+
+## 🗺️ Feature Roadmap
+${features.map(f => `- **[${f.phase}]** ${f.title} _(${f.complexity})_ — ${f.description}`).join('\n')}
+
+---
+
+## 🏆 Competitors
+${competitors.map(c => `- **${c.name}** (${c.typeLabel}) · 🔴 ${c.weakness} · 🟢 ${c.strength}`).join('\n')}
+
+---
+
+## 📡 Viability Radar
+${Object.entries(radar).map(([k, v]) => `- ${k}: ${v}/10`).join('\n')}
+`;
+
+        const blob = new Blob([md], { type: 'text/markdown' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${(prd.productName || 'blueprint').replace(/\s+/g, '_')}_blueprint.md`;
+        a.click();
+        URL.revokeObjectURL(url);
+    };
+
+    const handleCopyLink = () => {
+        setExportOpen(false);
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            setCopyDone(true);
+            setTimeout(() => setCopyDone(false), 2000);
+        });
+    };
+
     return (
         <div className="font-body antialiased min-h-screen flex flex-col relative overflow-x-hidden text-on-surface bg-background">
             
@@ -111,6 +208,9 @@ const Dashboard = () => {
 <Link to="/features-roadmap" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#94949e] opacity-70 hover:bg-white/5 hover:text-[#e4e1e9] transition-all">
 <span className="material-symbols-outlined">architecture</span>Architecture
 </Link>
+<Link to="/ai-assistant" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#94949e] opacity-70 hover:bg-white/5 hover:text-[#e4e1e9] transition-all">
+<span className="material-symbols-outlined">psychiatry</span>AI Assistant
+</Link>
 </nav>
 <div className="p-6 mt-auto">
 <div className="flex items-center gap-3">
@@ -143,24 +243,195 @@ const Dashboard = () => {
                 </Link>
 </div>
 </header>
+{/* ── Modal Overlay ── */}
+{activeModal && (
+    <div
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+        onClick={() => setActiveModal(null)}
+    >
+        <div
+            className="bg-[#1b1b20] border border-white/10 rounded-2xl shadow-2xl w-full max-w-lg p-8 space-y-6 relative"
+            onClick={e => e.stopPropagation()}
+        >
+            <button
+                onClick={() => setActiveModal(null)}
+                className="absolute top-4 right-4 text-on-surface-variant hover:text-on-surface transition-colors"
+            >
+                <span className="material-symbols-outlined">close</span>
+            </button>
+
+            {/* Health Score Modal */}
+            {activeModal === 'health' && (() => {
+                const radar = data.radarAnalysis || {};
+                const score = data.metrics?.healthScore ?? 0;
+                const scoreColor = score >= 75 ? 'text-secondary' : score >= 50 ? 'text-primary' : 'text-error';
+                const factors = [
+                    { label: 'Utility', val: radar.utility, icon: 'bolt', note: 'How directly the product solves a real pain.' },
+                    { label: 'Market Size', val: radar.marketSize, icon: 'pie_chart', note: 'Addressable market breadth.' },
+                    { label: 'Defensibility', val: radar.defensibility, icon: 'shield', note: 'Moat against competitor replication.' },
+                    { label: 'Monetization', val: radar.monetization, icon: 'payments', note: 'Clarity and strength of revenue model.' },
+                    { label: 'Tech Risk', val: radar.techRisk, icon: 'code', note: 'Engineering complexity & feasibility.' },
+                    { label: 'Urgency', val: radar.urgency, icon: 'timer', note: 'Market pull and timing of the idea.' },
+                ];
+                return (<>
+                    <div>
+                        <div className="text-[10px] font-mono uppercase tracking-widest text-on-surface-variant mb-1">Health Score Breakdown</div>
+                        <div className={`text-5xl font-headline font-bold ${scoreColor}`}>{score}<span className="text-xl text-on-surface-variant font-body">/100</span></div>
+                        <p className="text-xs text-on-surface-variant mt-2">Score is a weighted composite of six viability dimensions rated by the AI on a 0–10 scale.</p>
+                    </div>
+                    <div className="space-y-3">
+                        {factors.map(f => (
+                            <div key={f.label}>
+                                <div className="flex justify-between text-xs mb-1">
+                                    <span className="flex items-center gap-1.5 text-on-surface font-medium">
+                                        <span className="material-symbols-outlined text-primary text-sm">{f.icon}</span>
+                                        {f.label}
+                                    </span>
+                                    <span className="font-mono text-on-surface-variant">{f.val ?? '—'}/10</span>
+                                </div>
+                                <div className="w-full h-1.5 rounded-full bg-white/5">
+                                    <div
+                                        className="h-1.5 rounded-full bg-gradient-to-r from-primary-container to-primary transition-all"
+                                        style={{ width: `${((f.val || 0) / 10) * 100}%` }}
+                                    />
+                                </div>
+                                <div className="text-[10px] text-on-surface-variant/60 mt-0.5 italic">{f.note}</div>
+                            </div>
+                        ))}
+                    </div>
+                </>);
+            })()}
+
+            {/* Build Time Modal */}
+            {activeModal === 'build' && (() => {
+                const features = data.features || [];
+                const mvpCount = features.filter(f => f.phase === 'MVP').length;
+                const v1Count = features.filter(f => f.phase === 'V1').length;
+                const futureCount = features.filter(f => f.phase === 'Future').length;
+                const complexity = { High: features.filter(f => f.complexity === 'High').length, Medium: features.filter(f => f.complexity === 'Medium').length, Low: features.filter(f => f.complexity === 'Low').length };
+                return (<>
+                    <div>
+                        <div className="text-[10px] font-mono uppercase tracking-widest text-on-surface-variant mb-1">Build Timeline Estimate</div>
+                        <div className="text-5xl font-headline font-bold text-on-surface">{data.metrics?.buildTimeWeeks ?? '—'}<span className="text-xl text-on-surface-variant font-body"> wks</span></div>
+                        <p className="text-xs text-on-surface-variant mt-2">Estimated end-to-end delivery duration for an MVP-complete build by a lean team of 2–3 engineers.</p>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3">
+                        {[
+                            { phase: 'MVP', count: mvpCount, color: 'text-secondary', bg: 'bg-secondary/10 border-secondary/20', sublabel: '~40% of timeline' },
+                            { phase: 'V1', count: v1Count, color: 'text-primary', bg: 'bg-primary/10 border-primary/20', sublabel: '~35% of timeline' },
+                            { phase: 'Future', count: futureCount, color: 'text-on-surface-variant', bg: 'bg-white/5 border-white/10', sublabel: 'Post-launch' },
+                        ].map(p => (
+                            <div key={p.phase} className={`rounded-xl border p-4 ${p.bg} text-center`}>
+                                <div className={`text-2xl font-bold font-headline ${p.color}`}>{p.count}</div>
+                                <div className="text-[10px] font-mono uppercase tracking-widest text-on-surface-variant mt-1">{p.phase}</div>
+                                <div className="text-[9px] text-on-surface-variant/50 mt-0.5">{p.sublabel}</div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="space-y-2">
+                        <div className="text-[10px] font-mono uppercase tracking-widest text-on-surface-variant">Complexity Mix</div>
+                        {Object.entries(complexity).map(([lvl, cnt]) => (
+                            <div key={lvl} className="flex items-center justify-between text-xs">
+                                <span className={`font-medium ${lvl === 'High' ? 'text-error' : lvl === 'Medium' ? 'text-primary' : 'text-secondary'}`}>{lvl}</span>
+                                <span className="font-mono text-on-surface-variant">{cnt} feature{cnt !== 1 ? 's' : ''}</span>
+                            </div>
+                        ))}
+                    </div>
+                </>);
+            })()}
+
+            {/* Competitors / Big Players Modal */}
+            {activeModal === 'competitors' && (<>
+                <div>
+                    <div className="text-[10px] font-mono uppercase tracking-widest text-on-surface-variant mb-1">Big Players in the Space</div>
+                    <div className="text-5xl font-headline font-bold text-on-surface">{data.metrics?.competitorsCount ?? '—'}<span className="text-xl text-on-surface-variant font-body"> identified</span></div>
+                    <p className="text-xs text-on-surface-variant mt-2">Known market incumbents and their exploitable gaps your product should target.</p>
+                </div>
+                <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
+                    {(data.competitors || []).map((c, i) => (
+                        <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-2">
+                            <div className="flex items-center justify-between">
+                                <span className="font-semibold text-on-surface text-sm">{c.name}</span>
+                                <span className="text-[10px] uppercase tracking-wider font-mono px-2 py-0.5 rounded bg-surface-container text-on-surface-variant">{c.typeLabel}</span>
+                            </div>
+                            <div className="flex gap-2 flex-wrap">
+                                <span className="text-[11px] text-error bg-error/10 border border-error/20 px-2 py-1 rounded flex items-center gap-1">
+                                    <span className="material-symbols-outlined text-xs">remove_circle</span> {c.weakness}
+                                </span>
+                                <span className="text-[11px] text-secondary bg-secondary/10 border border-secondary/20 px-2 py-1 rounded flex items-center gap-1">
+                                    <span className="material-symbols-outlined text-xs">check_circle</span> {c.strength}
+                                </span>
+                            </div>
+                        </div>
+                    ))}
+                    {(!data.competitors || data.competitors.length === 0) && (
+                        <p className="text-sm text-on-surface-variant italic text-center py-6">No competitors mapped.</p>
+                    )}
+                </div>
+            </>)}
+        </div>
+    </div>
+)}
+
 {/* Metrics Row */}
 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-<div className="bg-surface-container p-6 rounded-xl border-[0.5px] border-outline-variant/10 flex flex-col justify-between min-h-[120px]">
-<div className="text-[10px] uppercase tracking-widest text-on-surface-variant font-mono">Health Score</div>
-<div className="text-4xl font-headline font-bold tracking-tighter mt-2 text-secondary">{data.metrics?.healthScore ?? '—'}<span className="text-lg text-on-surface-variant font-body">/100</span></div>
-</div>
-<div className="bg-surface-container p-6 rounded-xl border-[0.5px] border-outline-variant/10 flex flex-col justify-between min-h-[120px]">
-<div className="text-[10px] uppercase tracking-widest text-on-surface-variant font-mono">Build Time</div>
-<div className="text-4xl font-headline font-bold tracking-tighter mt-2 text-on-surface">{data.metrics?.buildTimeWeeks ?? '—'} <span className="text-lg text-on-surface-variant font-body font-normal">wks</span></div>
-</div>
-<div className="bg-surface-container p-6 rounded-xl border-[0.5px] border-outline-variant/10 flex flex-col justify-between min-h-[120px]">
-<div className="text-[10px] uppercase tracking-widest text-on-surface-variant font-mono">Competitors</div>
-<div className="text-4xl font-headline font-bold tracking-tighter mt-2 text-on-surface">{data.metrics?.competitorsCount ?? '—'}</div>
-</div>
-<div className="bg-surface-container p-6 rounded-xl border-[0.5px] border-outline-variant/10 flex flex-col justify-between min-h-[120px]">
-<div className="text-[10px] uppercase tracking-widest text-on-surface-variant font-mono">MVP Features</div>
-<div className="text-4xl font-headline font-bold tracking-tighter mt-2 text-on-surface">{data.metrics?.mvpFeaturesCount ?? '—'}</div>
-</div>
+    {/* Health Score Card */}
+    <button
+        onClick={() => setActiveModal('health')}
+        className="bg-surface-container p-6 rounded-xl border-[0.5px] border-outline-variant/10 flex flex-col justify-between min-h-[120px] text-left hover:border-secondary/40 hover:bg-surface-container-high transition-all group cursor-pointer"
+    >
+        <div className="flex items-center justify-between">
+            <div className="text-[10px] uppercase tracking-widest text-on-surface-variant font-mono">Health Score</div>
+            <span className="material-symbols-outlined text-on-surface-variant/30 group-hover:text-secondary transition-colors text-sm">open_in_new</span>
+        </div>
+        <div className="text-4xl font-headline font-bold tracking-tighter mt-2 text-secondary">{data.metrics?.healthScore ?? '—'}<span className="text-lg text-on-surface-variant font-body">/100</span></div>
+        <div className="text-[10px] text-on-surface-variant/50 mt-1 font-mono group-hover:text-secondary/70 transition-colors">Click · see breakdown →</div>
+    </button>
+
+    {/* Build Time Card */}
+    <button
+        onClick={() => setActiveModal('build')}
+        className="bg-surface-container p-6 rounded-xl border-[0.5px] border-outline-variant/10 flex flex-col justify-between min-h-[120px] text-left hover:border-primary/40 hover:bg-surface-container-high transition-all group cursor-pointer"
+    >
+        <div className="flex items-center justify-between">
+            <div className="text-[10px] uppercase tracking-widest text-on-surface-variant font-mono">Build Time</div>
+            <span className="material-symbols-outlined text-on-surface-variant/30 group-hover:text-primary transition-colors text-sm">open_in_new</span>
+        </div>
+        <div className="text-4xl font-headline font-bold tracking-tighter mt-2 text-on-surface">{data.metrics?.buildTimeWeeks ?? '—'} <span className="text-lg text-on-surface-variant font-body font-normal">wks</span></div>
+        <div className="text-[10px] text-on-surface-variant/50 mt-1 font-mono group-hover:text-primary/70 transition-colors">Click · phase breakdown →</div>
+    </button>
+
+    {/* Big Players Card */}
+    <button
+        onClick={() => setActiveModal('competitors')}
+        className="bg-surface-container p-6 rounded-xl border-[0.5px] border-outline-variant/10 flex flex-col justify-between min-h-[120px] text-left hover:border-tertiary/40 hover:bg-surface-container-high transition-all group cursor-pointer"
+    >
+        <div className="flex items-center justify-between">
+            <div className="text-[10px] uppercase tracking-widest text-on-surface-variant font-mono">Big Players</div>
+            <span className="material-symbols-outlined text-on-surface-variant/30 group-hover:text-tertiary transition-colors text-sm">open_in_new</span>
+        </div>
+        <div className="text-4xl font-headline font-bold tracking-tighter mt-2 text-on-surface">{data.metrics?.competitorsCount ?? '—'}</div>
+        <div className="text-[10px] text-on-surface-variant/50 mt-1 font-mono group-hover:text-tertiary/70 transition-colors">Click · view players →</div>
+    </button>
+
+    {/* MVP Features Card - inline mini list */}
+    <div className="bg-surface-container p-6 rounded-xl border-[0.5px] border-outline-variant/10 flex flex-col min-h-[120px] gap-3">
+        <div className="text-[10px] uppercase tracking-widest text-on-surface-variant font-mono">MVP Features</div>
+        <div className="flex flex-col gap-1.5 flex-1 overflow-hidden">
+            {mvpFeatures.slice(0, 3).map((f, i) => (
+                <div key={i} className="flex items-center justify-between gap-2">
+                    <span className="text-xs text-on-surface truncate">{f.title}</span>
+                    <span className={`text-[9px] shrink-0 font-mono uppercase px-1.5 py-0.5 rounded ${f.complexity === 'High' ? 'text-error bg-error/10' : f.complexity === 'Medium' ? 'text-primary bg-primary/10' : 'text-secondary bg-secondary/10'}`}>{f.complexity}</span>
+                </div>
+            ))}
+            {mvpFeatures.length > 3 && (
+                <div className="text-[10px] text-on-surface-variant/50 font-mono">+{mvpFeatures.length - 3} more</div>
+            )}
+            {mvpFeatures.length === 0 && (
+                <div className="text-[10px] text-on-surface-variant/50 italic">None specified</div>
+            )}
+        </div>
+    </div>
 </div>
 {/* Radars Row */}
 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
@@ -508,20 +779,57 @@ const Dashboard = () => {
 </div>
 </main>
 </div>
-{/* Bottom Export Bar */}
-<div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-surface-container-high/90 backdrop-blur-md px-2 py-2 rounded-full border-[0.5px] border-outline-variant/30 flex items-center gap-1 shadow-[0_8px_32px_rgba(0,0,0,0.4)] z-40">
-<button className="px-4 py-2 rounded-full text-xs font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors flex items-center gap-2">
-<span className="material-symbols-outlined text-[16px]">picture_as_pdf</span>PDF
-</button>
-<div className="w-[1px] h-4 bg-outline-variant/30 mx-1"></div>
-<button className="px-4 py-2 rounded-full text-xs font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors flex items-center gap-2">
-<span className="material-symbols-outlined text-[16px]">markdown</span>Markdown
-</button>
-<div className="w-[1px] h-4 bg-outline-variant/30 mx-1"></div>
-<button className="px-4 py-2 rounded-full text-xs font-medium bg-primary-container text-on-primary hover:bg-primary transition-colors flex items-center gap-2 shadow-[0_0_12px_rgba(124,58,237,0.3)]">
-<span className="material-symbols-outlined text-[16px]">link</span>Copy Link
-</button>
+{/* ── Export Dropdown ── */}
+<div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-2">
+    {/* Dropdown menu - appears above button */}
+    {exportOpen && (
+        <div className="bg-[#1b1b20] border border-white/10 rounded-2xl shadow-2xl overflow-hidden w-52 animate-in slide-in-from-bottom-2">
+            <button
+                onClick={handleExportPDF}
+                className="w-full flex items-center gap-3 px-5 py-3.5 text-sm text-on-surface hover:bg-white/5 transition-colors"
+            >
+                <span className="material-symbols-outlined text-[18px] text-error">picture_as_pdf</span>
+                <div className="text-left">
+                    <div className="font-medium">Export as PDF</div>
+                    <div className="text-[10px] text-on-surface-variant">Full dashboard printout</div>
+                </div>
+            </button>
+            <div className="h-[0.5px] bg-white/5" />
+            <button
+                onClick={handleExportMarkdown}
+                className="w-full flex items-center gap-3 px-5 py-3.5 text-sm text-on-surface hover:bg-white/5 transition-colors"
+            >
+                <span className="material-symbols-outlined text-[18px] text-secondary">markdown</span>
+                <div className="text-left">
+                    <div className="font-medium">Export as Markdown</div>
+                    <div className="text-[10px] text-on-surface-variant">Download .md file</div>
+                </div>
+            </button>
+            <div className="h-[0.5px] bg-white/5" />
+            <button
+                onClick={handleCopyLink}
+                className="w-full flex items-center gap-3 px-5 py-3.5 text-sm text-on-surface hover:bg-white/5 transition-colors"
+            >
+                <span className="material-symbols-outlined text-[18px] text-primary">{copyDone ? 'check_circle' : 'link'}</span>
+                <div className="text-left">
+                    <div className="font-medium">{copyDone ? 'Copied!' : 'Copy Link'}</div>
+                    <div className="text-[10px] text-on-surface-variant">Share this blueprint</div>
+                </div>
+            </button>
+        </div>
+    )}
+    {/* Single Export Button */}
+    <button
+        onClick={() => setExportOpen(o => !o)}
+        className="flex items-center gap-2 px-5 py-2.5 bg-primary-container text-on-primary rounded-full font-medium text-sm hover:bg-primary transition-all shadow-[0_4px_24px_rgba(124,58,237,0.4)] hover:shadow-[0_4px_32px_rgba(124,58,237,0.6)]"
+    >
+        <span className="material-symbols-outlined text-[18px]">ios_share</span>
+        Export Blueprint
+        <span className="material-symbols-outlined text-[14px] transition-transform" style={{transform: exportOpen ? 'rotate(180deg)' : 'rotate(0deg)'}}>expand_less</span>
+    </button>
 </div>
+{/* Click outside to close export */}
+{exportOpen && <div className="fixed inset-0 z-[39]" onClick={() => setExportOpen(false)} />}
 
         </div>
     );

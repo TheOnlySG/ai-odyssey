@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { getHistory } from '../apiService';
 
 const Analytics = () => {
     const [expandedCard, setExpandedCard] = useState(null);
     const [isGenerating, setIsGenerating] = useState(false);
     const [animatedValues, setAnimatedValues] = useState({});
     const [graphsMounted, setGraphsMounted] = useState(false);
+    const [history, setHistory] = useState([]);
+
+    useEffect(() => {
+        getHistory()
+            .then(data => setHistory(data))
+            .catch(err => console.error(err));
+    }, []);
 
     useEffect(() => {
         const timer = setTimeout(() => setGraphsMounted(true), 150);
@@ -37,6 +45,9 @@ const Analytics = () => {
             }, 800);
         }
     };
+    const totalSpecs = history.length;
+    const avgHealth = totalSpecs > 0 ? Math.round(history.reduce((a, b) => a + (b.healthScore || 0), 0) / totalSpecs) : 0;
+
     return (
         <div className="font-body antialiased min-h-screen flex flex-col relative overflow-x-hidden text-on-surface bg-background">
             
@@ -51,8 +62,8 @@ const Analytics = () => {
 </div>
 <div className="hidden md:flex items-center gap-6">
 <Link className="text-[#94949e] hover:text-[#e4e1e9] transition-colors duration-200 active:scale-95 transition-transform" to="/dashboard">Dashboard</Link>
-<Link className="text-[#94949e] hover:text-[#e4e1e9] transition-colors duration-200 active:scale-95 transition-transform" to="/dashboard">History</Link>
-<Link className="text-[#94949e] hover:text-[#e4e1e9] transition-colors duration-200 active:scale-95 transition-transform" to="/dashboard">Resources</Link>
+<Link className="text-[#94949e] hover:text-[#e4e1e9] transition-colors duration-200 active:scale-95 transition-transform" to="/history">History</Link>
+<Link className="text-[#94949e] hover:text-[#e4e1e9] transition-colors duration-200 active:scale-95 transition-transform" to="/resources">Resources</Link>
 </div>
 <div className="flex items-center gap-4">
 <button className="text-[#94949e] hover:text-[#e4e1e9] transition-colors duration-200">
@@ -71,10 +82,10 @@ const Analytics = () => {
 {/* SideNavBar */}
 <aside className="bg-[#1b1b20] font-['Inter'] text-sm h-screen w-64 border-r-[0.5px] border-white/5 mx-0 flex flex-col fixed left-0 top-0 pt-20 hidden md:flex shrink-0 z-40 shadow-2xl">
 <div className="px-6 pb-6">
-<button className="w-full bg-gradient-to-r from-primary-container to-primary text-on-primary py-2 px-4 rounded-lg font-medium tracking-wide flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+<Link to="/" className="w-full bg-gradient-to-r from-primary-container to-primary text-on-primary py-2 px-4 rounded-lg font-medium tracking-wide flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
 <span className="material-symbols-outlined text-[18px]">add</span>
                     New Project
-                </button>
+                </Link>
 </div>
 <nav className="flex-1 flex flex-col gap-1 px-3">
 <Link to="/dashboard" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#94949e] opacity-70 hover:bg-white/5 hover:text-[#e4e1e9] transition-all duration-300 ease-in-out">
@@ -85,13 +96,17 @@ const Analytics = () => {
 <span className="material-symbols-outlined">history</span>
                     History
                 </Link>
-<Link to="/analytics" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#94949e] opacity-70 hover:bg-white/5 hover:text-[#e4e1e9] transition-all duration-300 ease-in-out">
+<Link to="/analytics" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-primary bg-primary-container/10 hover:bg-white/5 transition-all duration-300 ease-in-out">
 <span className="material-symbols-outlined">insights</span>
                     Analytics
                 </Link>
 <Link to="/features-roadmap" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#94949e] opacity-70 hover:bg-white/5 hover:text-[#e4e1e9] transition-all duration-300 ease-in-out">
 <span className="material-symbols-outlined">architecture</span>
                     Architecture
+                </Link>
+<Link to="/ai-assistant" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#94949e] opacity-70 hover:bg-white/5 hover:text-[#e4e1e9] transition-all duration-300 ease-in-out">
+<span className="material-symbols-outlined">psychiatry</span>
+                    AI Assistant
                 </Link>
 </nav>
 <div className="p-6 mt-auto">
@@ -136,15 +151,15 @@ const Analytics = () => {
         {
             id: 1,
             label: "Total Specs Generated",
-            mainVal: "38",
-            sub: <span className="text-tertiary text-xs flex items-center mb-1"><span className="material-symbols-outlined text-[14px]">arrow_upward</span>12 this week</span>,
-            expandedData: "Breakdown: 20 PRDs, 10 Architectures, 8 Roadmaps. Conversion rate increased by 14% over the last 30 days."
+            mainVal: totalSpecs,
+            sub: <span className="text-tertiary text-xs flex items-center mb-1"><span className="material-symbols-outlined text-[14px]">arrow_upward</span>+{totalSpecs} this week</span>,
+            expandedData: "Your output is scaling! This represents a 14% increase in conversion velocity since last month."
         },
         {
             id: 2,
             label: "Avg Idea Health Score",
-            mainVal: "74",
-            sub: <div className="w-full bg-surface-container-lowest h-1 rounded-full mt-2 overflow-hidden"><div className="bg-secondary h-full rounded-full" style={{ width: '74%' }}></div></div>,
+            mainVal: avgHealth,
+            sub: <div className="w-full bg-surface-container-lowest h-1 rounded-full mt-2 overflow-hidden"><div className="bg-secondary h-full rounded-full" style={{ width: `${avgHealth}%` }}></div></div>,
             expandedData: "Scores improved across the board. Technical Risk criteria is showing the most improvement (+22%)."
         },
         {
@@ -314,36 +329,23 @@ const Analytics = () => {
 </tr>
 </thead>
 <tbody className="text-sm font-body">
-<tr className="hover:bg-surface-container-high transition-colors group">
-<td className="py-3 px-2 font-mono text-xs text-on-surface-variant">01</td>
-<td className="py-3 px-2 font-medium text-on-surface">AI Legal Assistant</td>
-<td className="py-3 px-2 text-on-surface-variant text-xs">SaaS / B2B</td>
-<td className="py-3 px-2 text-center"><span className="w-2 h-2 rounded-full bg-tertiary inline-block"></span></td>
-<td className="py-3 px-2 font-mono text-right">14</td>
+{history.slice(0, 7).map((item, index) => (
+<tr key={item.id} className="hover:bg-surface-container-high transition-colors group">
+<td className="py-3 px-2 font-mono text-xs text-on-surface-variant">{(index + 1).toString().padStart(2, '0')}</td>
+<td className="py-3 px-2 font-medium text-on-surface whitespace-nowrap overflow-hidden text-ellipsis max-w-xs">{item.idea.substring(0, 40) + '...'}</td>
+<td className="py-3 px-2 text-on-surface-variant text-xs">{item.category || 'General'}</td>
 <td className="py-3 px-2 text-center">
-<span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-primary-container/20 text-primary">Shared</span>
+    <span className={`w-2 h-2 rounded-full inline-block ${item.healthScore > 80 ? 'bg-tertiary' : item.healthScore > 60 ? 'bg-secondary' : item.healthScore > 40 ? 'bg-[#f59e0b]' : 'bg-error'}`}></span>
+</td>
+<td className="py-3 px-2 font-mono text-right">{item.mvpFeaturesCount || 0} MVPs</td>
+<td className="py-3 px-2 text-center">
+<span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-primary-container/20 text-primary">Saved</span>
 </td>
 </tr>
-<tr className="hover:bg-surface-container-high transition-colors bg-surface-container-low group">
-<td className="py-3 px-2 font-mono text-xs text-on-surface-variant">02</td>
-<td className="py-3 px-2 font-medium text-on-surface">Local Service Marketplace</td>
-<td className="py-3 px-2 text-on-surface-variant text-xs">Marketplace</td>
-<td className="py-3 px-2 text-center"><span className="w-2 h-2 rounded-full bg-secondary inline-block"></span></td>
-<td className="py-3 px-2 font-mono text-right">8</td>
-<td className="py-3 px-2 text-center">
-<span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-surface-variant text-on-surface-variant">Private</span>
-</td>
-</tr>
-<tr className="hover:bg-surface-container-high transition-colors group">
-<td className="py-3 px-2 font-mono text-xs text-on-surface-variant">03</td>
-<td className="py-3 px-2 font-medium text-on-surface">Creator Economy CRM</td>
-<td className="py-3 px-2 text-on-surface-variant text-xs">SaaS Tools</td>
-<td className="py-3 px-2 text-center"><span className="w-2 h-2 rounded-full bg-[#f59e0b] inline-block"></span></td>
-<td className="py-3 px-2 font-mono text-right">3</td>
-<td className="py-3 px-2 text-center">
-<span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-primary-container/20 text-primary">Shared</span>
-</td>
-</tr>
+))}
+{history.length === 0 && (
+    <tr><td colSpan="6" className="py-8 text-center text-on-surface-variant">No blueprints generated yet.</td></tr>
+)}
 </tbody>
 </table>
 </div>

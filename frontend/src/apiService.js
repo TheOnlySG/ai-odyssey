@@ -24,3 +24,15 @@ export const getHistoryItem = async (id) => {
     if (!res.ok) throw new Error('Failed to load item');
     return res.json();
 };
+
+export const chatWithAssistant = async (message, blueprintContext, history) => {
+    const res = await fetch(`${API_BASE}/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, blueprintContext, history })
+    });
+    if (!res.ok) {
+        throw new Error('Failed to send message');
+    }
+    return res.json();
+};

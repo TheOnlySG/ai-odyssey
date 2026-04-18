@@ -110,6 +110,9 @@ const History = () => {
 <Link to="/features-roadmap" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#94949e] opacity-70 hover:bg-white/5 hover:text-[#e4e1e9] transition-all">
 <span className="material-symbols-outlined">architecture</span>Architecture
 </Link>
+<Link to="/ai-assistant" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#94949e] opacity-70 hover:bg-white/5 hover:text-[#e4e1e9] transition-all">
+<span className="material-symbols-outlined">psychiatry</span>AI Assistant
+</Link>
 </nav>
 <div className="p-6 mt-auto">
 <div className="flex items-center gap-3">
