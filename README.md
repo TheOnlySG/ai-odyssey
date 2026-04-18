@@ -91,5 +91,11 @@ npm run dev
 Origin isn't just a dashboard; it's a tool. The UI mimics professional instrumentation panels, using high-contrast typography, subtle micro-animations, and a "rising from zero" data entry effect to make the AI's complex analysis feel alive and impactful.
 
 ---
-*Built with ❤️ for founders who want to build faster.*
+## 🏆 Achievements
+This project won a hackathon 🥇
+
+## 👥 Team Members
+1. @geekyfromgreek - https://github.com/geekyfromgreek
+2. @TheOnlySG  - https://github.com/TheOnlySG
+3. @rrane1307 - https://github.com/rrane1307
 
