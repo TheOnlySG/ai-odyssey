@@ -1,7 +1,42 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const Analytics = () => {
+    const [expandedCard, setExpandedCard] = useState(null);
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [animatedValues, setAnimatedValues] = useState({});
+    const [graphsMounted, setGraphsMounted] = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setGraphsMounted(true), 150);
+        return () => clearTimeout(timer);
+    }, []);
+
+    // Simple counter hook simulator for "creating data" effect
+    useEffect(() => {
+        if (expandedCard !== null && !isGenerating) {
+            let start = 0;
+            const interval = setInterval(() => {
+                start += 1;
+                setAnimatedValues(prev => ({ ...prev, [expandedCard]: Math.min(start * 14, 100) }));
+                if (start * 14 >= 100) clearInterval(interval);
+            }, 50);
+            return () => clearInterval(interval);
+        }
+    }, [expandedCard, isGenerating]);
+
+    const handleExpand = (id) => {
+        if (expandedCard === id) {
+            setExpandedCard(null);
+        } else {
+            setExpandedCard(id);
+            setAnimatedValues(prev => ({ ...prev, [id]: 0 }));
+            setIsGenerating(true);
+            setTimeout(() => {
+                setIsGenerating(false);
+            }, 800);
+        }
+    };
     return (
         <div className="font-body antialiased min-h-screen flex flex-col relative overflow-x-hidden text-on-surface bg-background">
             
@@ -95,41 +130,102 @@ const Analytics = () => {
                         </button>
 </div>
 </header>
-{/* Row 1: Top Metrics Bento Grid */}
+{/* Row 1: Top Metrics Bento Grid Expandable */}
 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-<div className="bg-surface-container rounded-xl p-5 ghost-border flex flex-col justify-between h-32 relative overflow-hidden group hover:bg-surface-container-high transition-colors">
-<div className="absolute -right-4 -top-4 w-24 h-24 bg-primary-container/10 rounded-full blur-2xl"></div>
-<span className="text-on-surface-variant text-xs font-medium font-label">Total Specs Generated</span>
-<div className="flex items-end justify-between">
-<span className="font-mono text-3xl font-medium text-on-surface tracking-tight">38</span>
-<span className="text-tertiary text-xs flex items-center mb-1"><span className="material-symbols-outlined text-[14px]">arrow_upward</span>12 this week</span>
-</div>
-</div>
-<div className="bg-surface-container rounded-xl p-5 ghost-border flex flex-col justify-between h-32 hover:bg-surface-container-high transition-colors">
-<span className="text-on-surface-variant text-xs font-medium font-label">Avg Idea Health Score</span>
-<div className="flex items-baseline gap-1">
-<span className="font-mono text-3xl font-medium text-on-surface tracking-tight">74</span>
-<span className="font-mono text-sm text-on-surface-variant">/100</span>
-</div>
-<div className="w-full bg-surface-container-lowest h-1 rounded-full mt-2 overflow-hidden">
-<div className="bg-secondary h-full rounded-full" ></div>
-</div>
-</div>
-<div className="bg-surface-container rounded-xl p-5 ghost-border flex flex-col justify-between h-32 hover:bg-surface-container-high transition-colors">
-<span className="text-on-surface-variant text-xs font-medium font-label">Most Used Output</span>
-<span className="font-headline text-2xl font-bold text-primary tracking-tight">PRD</span>
-<span className="text-on-surface-variant text-[10px] uppercase tracking-wider">Product Requirements</span>
-</div>
-<div className="bg-surface-container rounded-xl p-5 ghost-border flex flex-col justify-between h-32 hover:bg-surface-container-high transition-colors">
-<span className="text-on-surface-variant text-xs font-medium font-label">Total Exports</span>
-<span className="font-mono text-3xl font-medium text-on-surface tracking-tight">91</span>
-<span className="text-on-surface-variant text-xs mb-1">Across all formats</span>
-</div>
-<div className="bg-surface-container rounded-xl p-5 ghost-border flex flex-col justify-between h-32 hover:bg-surface-container-high transition-colors">
-<span className="text-on-surface-variant text-xs font-medium font-label">Avg Generation Time</span>
-<span className="font-mono text-3xl font-medium text-on-surface tracking-tight">18s</span>
-<span className="text-on-surface-variant text-xs mb-1">GPT-4 Turbo optimized</span>
-</div>
+    {[
+        {
+            id: 1,
+            label: "Total Specs Generated",
+            mainVal: "38",
+            sub: <span className="text-tertiary text-xs flex items-center mb-1"><span className="material-symbols-outlined text-[14px]">arrow_upward</span>12 this week</span>,
+            expandedData: "Breakdown: 20 PRDs, 10 Architectures, 8 Roadmaps. Conversion rate increased by 14% over the last 30 days."
+        },
+        {
+            id: 2,
+            label: "Avg Idea Health Score",
+            mainVal: "74",
+            sub: <div className="w-full bg-surface-container-lowest h-1 rounded-full mt-2 overflow-hidden"><div className="bg-secondary h-full rounded-full" style={{ width: '74%' }}></div></div>,
+            expandedData: "Scores improved across the board. Technical Risk criteria is showing the most improvement (+22%)."
+        },
+        {
+            id: 3,
+            label: "Most Used Output",
+            mainVal: "PRD",
+            sub: <span className="text-on-surface-variant text-[10px] uppercase tracking-wider">Product Requirements</span>,
+            expandedData: "PRD generation accounts for 62% of your activity, followed by Competitive Landscape at 18%."
+        },
+        {
+            id: 4,
+            label: "Total Exports",
+            mainVal: "91",
+            sub: <span className="text-on-surface-variant text-xs mb-1">Across all formats</span>,
+            expandedData: "PDF is the most popular format (45x), followed by Markdown (31x)."
+        },
+        {
+            id: 5,
+            label: "Avg Generation Time",
+            mainVal: "18s",
+            sub: <span className="text-on-surface-variant text-xs mb-1">GPT-4 Turbo optimized</span>,
+            expandedData: "Down from 24s. Recent prompt caching optimizations have decreased latency."
+        }
+    ].map(card => {
+        const isExp = expandedCard === card.id;
+        return (
+            <div 
+                key={card.id}
+                onClick={() => handleExpand(card.id)}
+                className={`bg-surface-container rounded-xl p-5 ghost-border flex flex-col relative overflow-hidden group hover:bg-surface-container-high transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] cursor-pointer ${isExp ? 'col-span-2 md:col-span-3 lg:col-span-5 h-48 z-10 scale-[1.01] shadow-[0_8px_30px_rgb(0,0,0,0.4)] border-primary/30' : 'h-32'}`}
+            >
+                {/* Background glow when expanded */}
+                {isExp && <div className="absolute -right-10 -top-10 w-48 h-48 bg-primary/10 rounded-full blur-3xl opacity-50 transition-opacity duration-1000"></div>}
+                
+                <div className="flex flex-col justify-between h-full relative z-10 w-full">
+                    <div>
+                        <span className="text-on-surface-variant text-xs font-medium font-label">{card.label}</span>
+                        <div className="flex flex-col md:flex-row md:items-baseline gap-2 mt-1">
+                            <span className="font-mono text-3xl font-medium text-on-surface tracking-tight">
+                                {isExp && isGenerating ? (
+                                    <span className="animate-pulse text-primary/50">--</span>
+                                ) : (
+                                    <span className="animate-[pulse_0.3s_ease-out]">{card.mainVal}</span>
+                                )}
+                            </span>
+                        </div>
+                    </div>
+
+                    {!isExp && (
+                        <div className="w-full mt-auto">
+                            {card.sub}
+                        </div>
+                    )}
+
+                    {/* Expanded Content View */}
+                    <div className={`mt-4 w-full transition-all duration-500 ${isExp ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+                        {isGenerating ? (
+                            <div className="flex flex-col gap-3">
+                                <div className="flex gap-2 items-center text-xs text-primary font-mono tracking-widest animate-pulse">
+                                    <span className="material-symbols-outlined text-[14px]">sync</span>
+                                    <span>Synthesizing vectors...</span>
+                                </div>
+                                <div className="w-full bg-surface-container-lowest h-1 rounded-full overflow-hidden">
+                                     <div className="h-full bg-primary animate-[slideRight_1.5s_ease-in-out_infinite]" style={{ width: '50%', transformOrigin: 'left' }}></div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="pt-2 border-t border-outline-variant/20 flex flex-col gap-2">
+                                <div className="text-sm text-on-surface-variant leading-relaxed">
+                                    {card.expandedData}
+                                </div>
+                                <div className="w-full bg-surface-container-lowest h-1.5 rounded-full mt-2 overflow-hidden">
+                                     <div className="bg-primary h-full rounded-full transition-all duration-1000 ease-out" style={{ width: `${animatedValues[card.id] || 0}%` }}></div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        );
+    })}
 </div>
 {/* Row 2: Main Charts */}
 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -150,8 +246,8 @@ const Analytics = () => {
 <div className="w-full ghost-border-b border-dashed h-0"></div>
 </div>
 {/* Synthetic SVG Line */}
-<svg className="absolute inset-0 w-full h-full preserve-3d" preserveaspectratio="none" viewBox="0 0 100 100">
-<path d="M0,80 C10,70 20,90 30,60 C40,30 50,50 60,40 C70,30 80,60 90,20 C95,10 100,20 100,20" fill="none" stroke="#7c3aed" strokeLinecap="round" strokeWidth="0.5"></path>
+<svg className="absolute inset-0 w-full h-full preserve-3d overflow-visible" preserveAspectRatio="none" viewBox="0 0 100 100">
+<path d="M0,80 C10,70 20,90 30,60 C40,30 50,50 60,40 C70,30 80,60 90,20 C95,10 100,20 100,20" fill="none" stroke="#7c3aed" strokeLinecap="round" strokeWidth="0.5" style={{ strokeDasharray: 300, strokeDashoffset: graphsMounted ? 0 : 300, transition: 'stroke-dashoffset 2.5s cubic-bezier(0.22, 1, 0.36, 1)' }}></path>
 </svg>
 {/* X Axis Labels */}
 <div className="absolute bottom-0 left-0 w-full flex justify-between text-[10px] font-mono text-on-surface-variant -mb-6">
@@ -171,28 +267,28 @@ const Analytics = () => {
 <div className="flex items-center gap-3">
 <span className="text-xs font-mono w-12 text-right text-on-surface-variant">90-100</span>
 <div className="flex-1 h-3 bg-surface-container-lowest rounded-full overflow-hidden">
-<div className="h-full bg-tertiary" ></div>
+<div className="h-full bg-tertiary transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] delay-[100ms]" style={{ width: graphsMounted ? '15%' : '0%' }}></div>
 </div>
 <span className="text-xs font-mono w-6">15%</span>
 </div>
 <div className="flex items-center gap-3">
 <span className="text-xs font-mono w-12 text-right text-on-surface-variant">70-89</span>
 <div className="flex-1 h-3 bg-surface-container-lowest rounded-full overflow-hidden">
-<div className="h-full bg-secondary" ></div>
+<div className="h-full bg-secondary transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] delay-[200ms]" style={{ width: graphsMounted ? '45%' : '0%' }}></div>
 </div>
 <span className="text-xs font-mono w-6">45%</span>
 </div>
 <div className="flex items-center gap-3">
 <span className="text-xs font-mono w-12 text-right text-on-surface-variant">50-69</span>
 <div className="flex-1 h-3 bg-surface-container-lowest rounded-full overflow-hidden">
-<div className="h-full bg-[#f59e0b]" ></div>
+<div className="h-full bg-[#f59e0b] transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] delay-[300ms]" style={{ width: graphsMounted ? '30%' : '0%' }}></div>
 </div>
 <span className="text-xs font-mono w-6">30%</span>
 </div>
 <div className="flex items-center gap-3">
 <span className="text-xs font-mono w-12 text-right text-on-surface-variant">&lt;50</span>
 <div className="flex-1 h-3 bg-surface-container-lowest rounded-full overflow-hidden">
-<div className="h-full bg-error" ></div>
+<div className="h-full bg-error transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] delay-[400ms]" style={{ width: graphsMounted ? '10%' : '0%' }}></div>
 </div>
 <span className="text-xs font-mono w-6">10%</span>
 </div>

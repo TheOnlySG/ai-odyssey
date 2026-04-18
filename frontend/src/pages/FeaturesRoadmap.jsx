@@ -5,80 +5,73 @@ const FeaturesRoadmap = () => {
     return (
         <div className="font-body antialiased min-h-screen flex flex-col relative overflow-x-hidden text-on-surface bg-background">
             
-{/* Shared Component: SideNavBar */}
-<nav className="fixed left-0 top-0 h-full flex flex-col p-4 w-64 border-r-[0.5px] border-[#39383e]/10 bg-[#1b1b20]/70 backdrop-blur-xl z-50">
-<div className="mb-8 px-4 flex items-center gap-3">
-<div className="w-8 h-8 rounded bg-primary-container flex items-center justify-center text-on-primary font-headline font-bold">K</div>
-<div>
-<h1 className="text-xl font-bold tracking-tighter text-[#e4e1e9] font-['Plus_Jakarta_Sans']">Kinetic</h1>
-<p className="text-xs text-[#9a9a9a]">Pro Instrument</p>
-</div>
-</div>
-<button className="mb-8 w-full py-2.5 px-4 bg-gradient-primary text-[#25005a] rounded-lg font-medium text-sm transition-transform scale-95 active:scale-90 hover:opacity-90 flex items-center justify-center gap-2">
-<span className="material-symbols-outlined text-[18px]">add</span>
-            New Feature
-        </button>
-<div className="flex flex-col gap-1 flex-grow font-['Plus_Jakarta_Sans'] text-sm tracking-tight">
-<Link className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#9a9a9a] hover:text-[#e4e1e9] hover:bg-[#1f1f24] transition-colors duration-200" to="/dashboard">
-<span className="material-symbols-outlined text-[20px]">dashboard</span>
-                Dashboard
-            </Link>
-<Link className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#d2bbff] bg-[#1f1f24] border-r-2 border-[#7c3aed]" to="/dashboard">
-<span className="material-symbols-outlined text-[20px]" style={{fontVariationSettings: "'FILL' 1"}}>list_alt</span>
-                Features
-            </Link>
-<Link className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#9a9a9a] hover:text-[#e4e1e9] hover:bg-[#1f1f24] transition-colors duration-200" to="/dashboard">
-<span className="material-symbols-outlined text-[20px]">rebase_edit</span>
-                Roadmap
-            </Link>
-<Link className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#9a9a9a] hover:text-[#e4e1e9] hover:bg-[#1f1f24] transition-colors duration-200" to="/dashboard">
-<span className="material-symbols-outlined text-[20px]">insights</span>
-                Analytics
-            </Link>
-<Link className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#9a9a9a] hover:text-[#e4e1e9] hover:bg-[#1f1f24] transition-colors duration-200" to="/dashboard">
-<span className="material-symbols-outlined text-[20px]">settings</span>
-                Settings
-            </Link>
-</div>
-<div className="mt-auto flex flex-col gap-1 border-t-[0.5px] border-[#39383e]/10 pt-4 font-['Plus_Jakarta_Sans'] text-sm tracking-tight">
-<Link className="flex items-center gap-3 px-4 py-2 rounded-lg text-[#9a9a9a] hover:text-[#e4e1e9] hover:bg-[#1f1f24] transition-colors duration-200" to="/dashboard">
-<span className="material-symbols-outlined text-[20px]">description</span>
-                Docs
-            </Link>
-<Link className="flex items-center gap-3 px-4 py-2 rounded-lg text-[#9a9a9a] hover:text-[#e4e1e9] hover:bg-[#1f1f24] transition-colors duration-200" to="/dashboard">
-<span className="material-symbols-outlined text-[20px]">help_outline</span>
-                Support
-            </Link>
-</div>
-</nav>
-{/* Shared Component: TopAppBar */}
-<header className="fixed top-0 right-0 left-64 flex justify-between items-center px-8 z-40 h-16 border-b-[0.5px] border-[#39383e]/10 bg-[#131318]/70 backdrop-blur-md w-[calc(100%-16rem)]">
+{/* TopNavBar Shared Component */}
+<nav className="bg-[#131318]/70 backdrop-blur-md font-['Plus_Jakarta_Sans'] text-sm tracking-tight docked full-width top-0 z-50 border-b-[0.5px] border-white/10 flat no shadows flex justify-between items-center px-8 h-16 w-full shrink-0">
 <div className="flex items-center gap-8">
-<span className="font-['Plus_Jakarta_Sans'] font-black tracking-tight text-[#e4e1e9] text-lg">Monolith</span>
-<nav className="hidden md:flex items-center gap-6 font-['Inter'] text-sm font-medium">
-<Link className="text-[#d2bbff] border-b border-[#7c3aed] pb-1 cursor-pointer opacity-80 hover:opacity-100 hover:text-[#4cd7f6] transition-all" to="/dashboard">Overview</Link>
-<Link className="text-[#9a9a9a] pb-1 cursor-pointer opacity-80 hover:opacity-100 hover:text-[#4cd7f6] transition-all" to="/dashboard">Changelog</Link>
-<Link className="text-[#9a9a9a] pb-1 cursor-pointer opacity-80 hover:opacity-100 hover:text-[#4cd7f6] transition-all" to="/dashboard">Feedback</Link>
+<div className="text-xl font-black tracking-tighter text-[#e4e1e9]">SpecForge</div>
+<div className="hidden md:flex items-center bg-surface-container-low rounded-full px-4 py-1.5 ghost-border text-on-surface-variant w-64 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/20 transition-all">
+<span className="material-symbols-outlined text-lg mr-2">search</span>
+<input className="bg-transparent border-none outline-none text-sm w-full placeholder-on-surface-variant/50 font-body text-on-surface" placeholder="Search blueprints..." type="text"/>
+</div>
+</div>
+<div className="hidden md:flex items-center gap-6">
+<Link className="text-[#94949e] hover:text-[#e4e1e9] transition-colors duration-200 active:scale-95 transition-transform" to="/dashboard">Dashboard</Link>
+<Link className="text-[#94949e] hover:text-[#e4e1e9] transition-colors duration-200 active:scale-95 transition-transform" to="/dashboard">History</Link>
+<Link className="text-[#94949e] hover:text-[#e4e1e9] transition-colors duration-200 active:scale-95 transition-transform" to="/dashboard">Resources</Link>
+</div>
+<div className="flex items-center gap-4">
+<button className="text-[#94949e] hover:text-[#e4e1e9] transition-colors duration-200">
+<span className="material-symbols-outlined">notifications</span>
+</button>
+<button className="text-[#94949e] hover:text-[#e4e1e9] transition-colors duration-200">
+<span className="material-symbols-outlined">settings</span>
+</button>
+<div className="h-8 w-8 rounded-full bg-surface-container-highest overflow-hidden ghost-border">
+<img alt="User profile" className="w-full h-full object-cover" data-alt="professional headshot of a person with neutral background, soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBb9w2fmMUl8sZk9ug6d_2mV6Pl1FbVTGGgMoD8Pu9JPC4qwkP7b1cyJLBp2AZnNI7uJxzleumMPyNoFA2pBKw8PmI3w0DlvpEXeu67V_Mb93B_EjIOFMAe2DRzRpE4GTnvaeOwKLVY-uXjkIH70EuZfrbpeWWHnX49neD3dJk0PcvEqH9q0GXHbVhDghozMit2mNppLr-TPpFtidYqlfhb9l9W-St8XFoVsH_-0KEAQI5CjTe2Xan63DfsaOCLX_5X4M0ab6qpcGo7"/>
+</div>
+</div>
 </nav>
+<div className="flex flex-1 overflow-hidden relative">
+{/* SideNavBar Shared Component */}
+{/* SideNavBar */}
+<aside className="bg-[#1b1b20] font-['Inter'] text-sm h-screen w-64 border-r-[0.5px] border-white/5 mx-0 flex flex-col fixed left-0 top-0 pt-20 hidden md:flex shrink-0 z-40 shadow-2xl">
+<div className="px-6 pb-6">
+<button className="w-full bg-gradient-to-r from-primary-container to-primary text-on-primary py-2 px-4 rounded-lg font-medium tracking-wide flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+<span className="material-symbols-outlined text-[18px]">add</span>
+                    New Project
+                </button>
 </div>
-<div className="flex items-center gap-6">
-<div className="relative hidden lg:block">
-<span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
-<input className="bg-surface-container-low border-none rounded-full py-1.5 pl-10 pr-4 text-sm text-on-surface focus:ring-1 focus:ring-primary w-48 transition-all" placeholder="Search..." type="text"/>
+<nav className="flex-1 flex flex-col gap-1 px-3">
+<Link to="/dashboard" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#94949e] opacity-70 hover:bg-white/5 hover:text-[#e4e1e9] transition-all duration-300 ease-in-out">
+<span className="material-symbols-outlined">dashboard</span>
+                    Dashboard
+                </Link>
+<Link to="/history" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#94949e] opacity-70 hover:bg-white/5 hover:text-[#e4e1e9] transition-all duration-300 ease-in-out">
+<span className="material-symbols-outlined">history</span>
+                    History
+                </Link>
+<Link to="/analytics" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#94949e] opacity-70 hover:bg-white/5 hover:text-[#e4e1e9] transition-all duration-300 ease-in-out">
+<span className="material-symbols-outlined">insights</span>
+                    Analytics
+                </Link>
+<Link to="/features-roadmap" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#94949e] opacity-70 hover:bg-white/5 hover:text-[#e4e1e9] transition-all duration-300 ease-in-out">
+<span className="material-symbols-outlined">architecture</span>
+                    Architecture
+                </Link>
+</nav>
+<div className="p-6 mt-auto">
+<div className="flex items-center gap-3">
+<div className="w-8 h-8 rounded bg-surface-container flex items-center justify-center ghost-border text-primary">
+<span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>view_in_ar</span>
 </div>
-<div className="flex items-center gap-4 text-[#d2bbff]">
-<button className="cursor-pointer opacity-80 hover:opacity-100 hover:text-[#4cd7f6] transition-all flex items-center justify-center">
-<span className="material-symbols-outlined text-[20px]">notifications</span>
-</button>
-<button className="cursor-pointer opacity-80 hover:opacity-100 hover:text-[#4cd7f6] transition-all flex items-center justify-center">
-<span className="material-symbols-outlined text-[20px]">bolt</span>
-</button>
-<img alt="User Profile" className="w-8 h-8 rounded-full border border-surface-bright object-cover" data-alt="professional headshot of a young woman with dark hair against a neutral gray background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzG-3C6BniTB6i_UcKiPrgzkLo98b0MoPQKaFaIDJq4PRFNdgPO1dhUrnbwCV8n8sAdJs6yg4wO6dMONRG-vfviyN6u4UZsPvL_-8w_rMjYcJK4pzb8WwJup0ECe5l6I2wYxqqPibXczCJINI48KyF7rU6RpG1Ro0r8qiL1IE34w3lSuLj5UqUC4eywqVawP6PSlPFBppCWVJwGsobw_jW-BGqjX40an_lUNwq-txLoFPOHuYurOQYDJsBviyEROMluOlLoFnH3v3K"/>
+<div>
+<div className="text-xs font-bold text-[#e4e1e9]">SpecForge</div>
+<div className="text-[10px] text-on-surface-variant uppercase tracking-widest">Precision Forge</div>
 </div>
 </div>
-</header>
-{/* Main Canvas */}
-<main className="ml-64 mt-16 p-10 max-w-7xl mx-auto space-y-12">
+</div>
+</aside>
+<main className="flex-1 md:ml-64 overflow-y-auto w-full p-10 max-w-7xl mx-auto space-y-12">
 {/* Section 1: Header */}
 <section className="flex items-end justify-between">
 <div className="space-y-2">
@@ -293,7 +286,7 @@ const FeaturesRoadmap = () => {
 </div>
 </section>
 </main>
-
+</div>
         </div>
     );
 };

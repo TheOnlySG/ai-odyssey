@@ -70,6 +70,21 @@ export default {
             },
             backgroundImage: {
                 'dot-grid': 'radial-gradient(circle, #39383e 1px, transparent 1px)',
+            },
+            keyframes: {
+                slideRight: {
+                    '0%': { transform: 'scaleX(0)' },
+                    '50%': { transform: 'scaleX(1)' },
+                    '100%': { transform: 'scaleX(0)', transformOrigin: 'right' }
+                },
+                fadeIn: {
+                    '0%': { opacity: '0', transform: 'translateY(10px)' },
+                    '100%': { opacity: '1', transform: 'translateY(0)' }
+                }
+            },
+            animation: {
+                'slideRight': 'slideRight 1.5s ease-in-out infinite',
+                'fadeIn': 'fadeIn 0.5s ease-out forwards'
             }
         }
     },

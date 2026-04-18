@@ -1,7 +1,35 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAppContext } from '../context/AppContext';
+import { generateBlueprint } from '../apiService';
 
 const Landing = () => {
+  const [idea, setIdea] = useState('');
+  const { setActiveBlueprint, setIsGenerating, isGenerating } = useAppContext();
+  const navigate = useNavigate();
+
+  const handleGenerate = async () => {
+    if (!idea.trim() || isGenerating) return;
+    setIsGenerating(true);
+    try {
+      const result = await generateBlueprint(idea);
+      setActiveBlueprint(result);
+      navigate('/dashboard');
+    } catch (err) {
+      alert('Generation failed: ' + err.message);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleTryExample = (example) => {
+    setIdea(example);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') handleGenerate();
+  };
+
   return (
     <div className="font-body antialiased min-h-screen flex flex-col relative overflow-x-hidden dot-bg text-on-surface bg-surface-dim">
       {/* Ambient Glow */}
@@ -14,7 +42,7 @@ const Landing = () => {
             Spec<span className="text-primary-container material-symbols-outlined text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>bolt</span>Forge
           </Link>
           <nav className="hidden md:flex gap-6 items-center ml-4 border-l border-outline-variant/30 pl-6 h-6">
-            <Link className="text-on-surface-variant hover:text-on-surface transition-colors duration-200 text-sm font-medium" to="/">History</Link>
+            <Link className="text-on-surface-variant hover:text-on-surface transition-colors duration-200 text-sm font-medium" to="/history">History</Link>
           </nav>
         </div>
         <div className="flex items-center gap-4">
@@ -54,19 +82,40 @@ const Landing = () => {
             
             <div className="relative flex items-center bg-surface-container-lowest border-[0.5px] border-outline-variant/50 focus-within:border-primary/50 focus-within:shadow-[0_0_12px_rgba(210,187,255,0.1)] rounded-xl overflow-hidden transition-all duration-300">
               <span className="material-symbols-outlined text-on-surface-variant ml-4 absolute left-0 pointer-events-none">auto_awesome</span>
-              <input className="w-full h-14 pl-12 pr-[130px] bg-transparent border-none text-on-surface text-base placeholder-on-surface-variant/50 focus:ring-0 outline-none" placeholder="Describe your app idea..." type="text"/>
-              <Link className="absolute right-1.5 top-1.5 bottom-1.5 flex items-center gap-2 px-4 bg-gradient-to-r from-primary-container to-primary text-on-primary font-medium text-sm rounded-lg hover:opacity-90 transition-opacity" to="/dashboard">
-                  Generate
-                  <span className="material-symbols-outlined text-sm">arrow_forward</span>
-              </Link>
+              <input 
+                className="w-full h-14 pl-12 pr-[130px] bg-transparent border-none text-on-surface text-base placeholder-on-surface-variant/50 focus:ring-0 outline-none" 
+                placeholder="Describe your app idea..." 
+                type="text"
+                value={idea}
+                onChange={(e) => setIdea(e.target.value)}
+                onKeyDown={handleKeyDown}
+                disabled={isGenerating}
+              />
+              <button 
+                onClick={handleGenerate}
+                disabled={isGenerating || !idea.trim()}
+                className="absolute right-1.5 top-1.5 bottom-1.5 flex items-center gap-2 px-4 bg-gradient-to-r from-primary-container to-primary text-on-primary font-medium text-sm rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isGenerating ? (
+                  <>
+                    <span className="material-symbols-outlined text-sm animate-spin">progress_activity</span>
+                    Forging...
+                  </>
+                ) : (
+                  <>
+                    Generate
+                    <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                  </>
+                )}
+              </button>
             </div>
 
             {/* Try Hint */}
             <div className="mt-4 flex flex-wrap justify-center gap-2 text-xs text-on-surface-variant font-mono">
               <span className="opacity-50">Try:</span>
-              <button className="hover:text-primary transition-colors">"A minimalist habit tracker for designers"</button>
+              <button className="hover:text-primary transition-colors" onClick={() => handleTryExample("A minimalist habit tracker for designers")}>"A minimalist habit tracker for designers"</button>
               <span className="opacity-30">|</span>
-              <button className="hover:text-primary transition-colors">"An AI CRM for local plumbers"</button>
+              <button className="hover:text-primary transition-colors" onClick={() => handleTryExample("An AI CRM for local plumbers")}>"An AI CRM for local plumbers"</button>
             </div>
           </div>
 

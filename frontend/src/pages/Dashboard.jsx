@@ -1,65 +1,116 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAppContext } from '../context/AppContext';
+import { generateBlueprint } from '../apiService';
 
 const Dashboard = () => {
+    const { activeBlueprint, setActiveBlueprint, isGenerating, setIsGenerating } = useAppContext();
+    const navigate = useNavigate();
+    const [activeTab, setActiveTab] = useState('PRD');
+
+    const data = activeBlueprint?.data;
+    const idea = activeBlueprint?.idea;
+
+    // If no blueprint loaded, show an empty state prompting to generate
+    if (!data) {
+        return (
+            <div className="font-body antialiased min-h-screen flex flex-col relative overflow-x-hidden text-on-surface bg-background">
+{/* TopNavBar */}
+<nav className="fixed top-0 w-full flex justify-between items-center px-6 h-16 bg-[#131318]/70 backdrop-blur-xl z-50 border-b border-[#39383e]/20 text-sm">
+<div className="flex items-center gap-6">
+<div className="text-xl font-bold tracking-tighter text-[#e4e1e9] flex items-center gap-1 font-headline">
+<span className="material-symbols-outlined text-primary" style={{fontVariationSettings: "'FILL' 1"}}>bolt</span>
+                SpecForge
+            </div>
+</div>
+<Link className="px-4 py-2 bg-gradient-to-br from-primary-container to-primary text-on-primary rounded font-medium hover:opacity-90 transition-opacity" to="/">Create New</Link>
+</nav>
+<div className="flex flex-1 items-center justify-center pt-16">
+<div className="text-center max-w-md space-y-6">
+    <span className="material-symbols-outlined text-6xl text-on-surface-variant/30">auto_awesome</span>
+    <h2 className="font-headline text-2xl font-bold text-on-surface">No Blueprint Generated Yet</h2>
+    <p className="text-on-surface-variant text-sm">Head back to the landing page and describe your startup idea. We'll generate a full product blueprint using AI.</p>
+    <Link to="/" className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-container to-primary text-on-primary rounded-lg font-medium hover:opacity-90 transition-opacity">
+        <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+        Go Generate
+    </Link>
+</div>
+</div>
+            </div>
+        );
+    }
+
+    // Compute radar points from data
+    const radarValues = data.radarAnalysis || {};
+    const rLabels = ['utility', 'marketSize', 'defensibility', 'monetization', 'techRisk', 'urgency'];
+    const rAngles = rLabels.map((_, i) => (Math.PI * 2 * i) / 6 - Math.PI / 2);
+    const rPoints = rLabels.map((key, i) => {
+        const val = (radarValues[key] || 0) / 10;
+        const x = 50 + val * 35 * Math.cos(rAngles[i]);
+        const y = 50 + val * 35 * Math.sin(rAngles[i]);
+        return { x, y };
+    });
+    const radarPolygon = rPoints.map(p => `${p.x},${p.y}`).join(' ');
+
+    const handleRegenerate = async () => {
+        if (isGenerating || !idea) return;
+        setIsGenerating(true);
+        try {
+            const result = await generateBlueprint(idea);
+            setActiveBlueprint(result);
+        } catch (err) {
+            alert('Regeneration failed: ' + err.message);
+        } finally {
+            setIsGenerating(false);
+        }
+    };
+
+    const mvpFeatures = (data.features || []).filter(f => f.phase === 'MVP');
+
     return (
         <div className="font-body antialiased min-h-screen flex flex-col relative overflow-x-hidden text-on-surface bg-background">
             
 {/* TopNavBar */}
-<nav className="fixed top-0 w-full flex justify-between items-center px-6 h-16 bg-[#131318]/70 backdrop-blur-xl docked full-width top-0 z-50 border-b border-[#39383e]/20 flat no shadows text-sm">
+<nav className="fixed top-0 w-full flex justify-between items-center px-6 h-16 bg-[#131318]/70 backdrop-blur-xl z-50 border-b border-[#39383e]/20 text-sm">
 <div className="flex items-center gap-6">
 <div className="text-xl font-bold tracking-tighter text-[#e4e1e9] flex items-center gap-1 font-headline">
-<span className="material-symbols-outlined text-primary" data-icon="bolt" data-weight="fill" style={{fontVariationSettings: "'FILL' 1"}}>bolt</span>
+<span className="material-symbols-outlined text-primary" style={{fontVariationSettings: "'FILL' 1"}}>bolt</span>
                 SpecForge
             </div>
 <div className="hidden md:flex gap-6 font-['Plus_Jakarta_Sans'] tracking-tight">
-<Link className="text-[#d2bbff] border-b-2 border-[#7c3aed] pb-1 flex items-center gap-2 hover:bg-[#1f1f24] transition-colors duration-200" to="/dashboard">Dashboard</Link>
-<Link className="text-[#94a3b8] hover:text-[#e4e1e9] flex items-center gap-2 hover:bg-[#1f1f24] transition-colors duration-200" to="/dashboard">History</Link>
-<Link className="text-[#94a3b8] hover:text-[#e4e1e9] flex items-center gap-2 hover:bg-[#1f1f24] transition-colors duration-200" to="/dashboard">Resources</Link>
+<Link className="text-[#d2bbff] border-b-2 border-[#7c3aed] pb-1" to="/dashboard">Dashboard</Link>
+<Link className="text-[#94a3b8] hover:text-[#e4e1e9] transition-colors" to="/history">History</Link>
 </div>
 </div>
 <div className="flex items-center gap-4">
-<div className="hidden md:flex gap-2">
-<button className="text-on-surface-variant hover:text-on-surface transition-colors">
-<span className="material-symbols-outlined" data-icon="notifications">notifications</span>
-</button>
-<button className="text-on-surface-variant hover:text-on-surface transition-colors">
-<span className="material-symbols-outlined" data-icon="settings">settings</span>
-</button>
-</div>
-<button className="px-4 py-2 bg-gradient-to-br from-primary-container to-primary text-on-primary rounded font-medium hover:opacity-90 transition-opacity">Create New</button>
-<div className="h-8 w-8 rounded-full bg-surface-variant border-[0.5px] border-outline-variant overflow-hidden shrink-0">
-<img alt="User avatar" className="w-full h-full object-cover" data-alt="Portrait of young woman with short dark hair in professional setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCk-Hc_ajLs9aLDMVZ1Mxk-KHHu0Tyck6683l2w0jIxYw--iT6NfohtM0dKRmJJUO9_sBkqL9aAfV_d_aYCFkintt_dxfucJH0lZDjiS2jkK3oDimu4LCz78VDFBnhtRaU2Nq7bqUxqOKOWJsvI7dhLPQBzvBK85QASHUc-GUijEAbyli33xPWUW9Lj28u48BEzTDMkR0RoEQX-UrlRrobWra8tHYo4ev20xl_6hHn7U0c5uIVWKVtD7Ge3pieKBgZbaCsL3_MqQWkf"/>
-</div>
+<button className="text-on-surface-variant hover:text-on-surface transition-colors"><span className="material-symbols-outlined">notifications</span></button>
+<button className="text-on-surface-variant hover:text-on-surface transition-colors"><span className="material-symbols-outlined">settings</span></button>
+<Link className="px-4 py-2 bg-gradient-to-br from-primary-container to-primary text-on-primary rounded font-medium hover:opacity-90 transition-opacity" to="/">Create New</Link>
 </div>
 </nav>
 <div className="flex flex-1 overflow-hidden relative">
 
 {/* SideNavBar */}
-<aside className="bg-[#1b1b20] font-['Inter'] text-sm h-screen w-64 border-r-[0.5px] border-white/5 mx-0 flex flex-col fixed left-0 top-0 pt-20 hidden md:flex shrink-0 z-40 shadow-2xl">
+<aside className="bg-[#1b1b20] font-['Inter'] text-sm h-screen w-64 border-r-[0.5px] border-white/5 flex flex-col fixed left-0 top-0 pt-20 hidden md:flex shrink-0 z-40 shadow-2xl">
 <div className="px-6 pb-6">
-<button className="w-full bg-gradient-to-r from-primary-container to-primary text-on-primary py-2 px-4 rounded-lg font-medium tracking-wide flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+<Link to="/" className="w-full bg-gradient-to-r from-primary-container to-primary text-on-primary py-2 px-4 rounded-lg font-medium tracking-wide flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
 <span className="material-symbols-outlined text-[18px]">add</span>
                     New Project
-                </button>
+                </Link>
 </div>
 <nav className="flex-1 flex flex-col gap-1 px-3">
-<Link to="/dashboard" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#94949e] opacity-70 hover:bg-white/5 hover:text-[#e4e1e9] transition-all duration-300 ease-in-out">
-<span className="material-symbols-outlined">dashboard</span>
-                    Dashboard
-                </Link>
-<Link to="/history" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#94949e] opacity-70 hover:bg-white/5 hover:text-[#e4e1e9] transition-all duration-300 ease-in-out">
-<span className="material-symbols-outlined">history</span>
-                    History
-                </Link>
-<Link to="/analytics" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#94949e] opacity-70 hover:bg-white/5 hover:text-[#e4e1e9] transition-all duration-300 ease-in-out">
-<span className="material-symbols-outlined">insights</span>
-                    Analytics
-                </Link>
-<Link to="/features-roadmap" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#94949e] opacity-70 hover:bg-white/5 hover:text-[#e4e1e9] transition-all duration-300 ease-in-out">
-<span className="material-symbols-outlined">architecture</span>
-                    Architecture
-                </Link>
+<Link to="/dashboard" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#d2bbff] bg-white/5">
+<span className="material-symbols-outlined">dashboard</span>Dashboard
+</Link>
+<Link to="/history" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#94949e] opacity-70 hover:bg-white/5 hover:text-[#e4e1e9] transition-all">
+<span className="material-symbols-outlined">history</span>History
+</Link>
+<Link to="/analytics" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#94949e] opacity-70 hover:bg-white/5 hover:text-[#e4e1e9] transition-all">
+<span className="material-symbols-outlined">insights</span>Analytics
+</Link>
+<Link to="/features-roadmap" className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#94949e] opacity-70 hover:bg-white/5 hover:text-[#e4e1e9] transition-all">
+<span className="material-symbols-outlined">architecture</span>Architecture
+</Link>
 </nav>
 <div className="p-6 mt-auto">
 <div className="flex items-center gap-3">
@@ -74,232 +125,403 @@ const Dashboard = () => {
 </div>
 </aside>
 
-{/* SideNavBar (Hidden on md for Dashboard to focus on content, but keeping structure as requested if needed, opting to hide it to match "Dashboard" full width feel in instructions) */}
 <main className="flex-1 max-w-[1600px] mx-auto w-full pt-24 px-6 pb-24 md:ml-64 relative z-10 overflow-y-auto">
 {/* Context Bar */}
 <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
 <div className="flex items-center gap-3 bg-surface-container-low px-4 py-2 rounded-full border-[0.5px] border-outline-variant/30">
-<span className="material-symbols-outlined text-primary text-sm" data-icon="psychology">psychology</span>
-<span className="text-sm text-on-surface-variant">AI tool for therapist patient tracking</span>
+<span className="material-symbols-outlined text-primary text-sm">psychology</span>
+<span className="text-sm text-on-surface-variant">{idea}</span>
 </div>
 <div className="flex items-center gap-3">
-<button className="px-4 py-2 rounded border-[0.5px] border-outline-variant/30 text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2 text-sm">
-<span className="material-symbols-outlined text-[18px]" data-icon="refresh">refresh</span>
-                    Regenerate
+<button onClick={handleRegenerate} disabled={isGenerating} className="px-4 py-2 rounded border-[0.5px] border-outline-variant/30 text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2 text-sm disabled:opacity-50">
+{isGenerating ? <span className="material-symbols-outlined text-[18px] animate-spin">progress_activity</span> : <span className="material-symbols-outlined text-[18px]">refresh</span>}
+                    {isGenerating ? 'Regenerating...' : 'Regenerate'}
                 </button>
-<button className="px-4 py-2 rounded border-[0.5px] border-outline-variant/30 text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2 text-sm">
-<span className="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
-                    Edit Idea
-                </button>
-<button className="px-4 py-2 rounded border-[0.5px] border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 transition-colors flex items-center gap-2 text-sm font-medium">
-                    Ask AI Co-Founder ✦
-                </button>
+<Link to="/" className="px-4 py-2 rounded border-[0.5px] border-outline-variant/30 text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2 text-sm">
+<span className="material-symbols-outlined text-[18px]">edit</span>
+                    New Idea
+                </Link>
 </div>
 </header>
 {/* Metrics Row */}
 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
 <div className="bg-surface-container p-6 rounded-xl border-[0.5px] border-outline-variant/10 flex flex-col justify-between min-h-[120px]">
 <div className="text-[10px] uppercase tracking-widest text-on-surface-variant font-mono">Health Score</div>
-<div className="text-4xl font-headline font-bold tracking-tighter mt-2 text-secondary">78<span className="text-lg text-on-surface-variant font-body">/100</span></div>
+<div className="text-4xl font-headline font-bold tracking-tighter mt-2 text-secondary">{data.metrics?.healthScore ?? '—'}<span className="text-lg text-on-surface-variant font-body">/100</span></div>
 </div>
 <div className="bg-surface-container p-6 rounded-xl border-[0.5px] border-outline-variant/10 flex flex-col justify-between min-h-[120px]">
 <div className="text-[10px] uppercase tracking-widest text-on-surface-variant font-mono">Build Time</div>
-<div className="text-4xl font-headline font-bold tracking-tighter mt-2 text-on-surface">6-8 <span className="text-lg text-on-surface-variant font-body font-normal">wks</span></div>
+<div className="text-4xl font-headline font-bold tracking-tighter mt-2 text-on-surface">{data.metrics?.buildTimeWeeks ?? '—'} <span className="text-lg text-on-surface-variant font-body font-normal">wks</span></div>
 </div>
 <div className="bg-surface-container p-6 rounded-xl border-[0.5px] border-outline-variant/10 flex flex-col justify-between min-h-[120px]">
 <div className="text-[10px] uppercase tracking-widest text-on-surface-variant font-mono">Competitors</div>
-<div className="text-4xl font-headline font-bold tracking-tighter mt-2 text-on-surface">4</div>
+<div className="text-4xl font-headline font-bold tracking-tighter mt-2 text-on-surface">{data.metrics?.competitorsCount ?? '—'}</div>
 </div>
 <div className="bg-surface-container p-6 rounded-xl border-[0.5px] border-outline-variant/10 flex flex-col justify-between min-h-[120px]">
 <div className="text-[10px] uppercase tracking-widest text-on-surface-variant font-mono">MVP Features</div>
-<div className="text-4xl font-headline font-bold tracking-tighter mt-2 text-on-surface">7</div>
+<div className="text-4xl font-headline font-bold tracking-tighter mt-2 text-on-surface">{data.metrics?.mvpFeaturesCount ?? '—'}</div>
 </div>
 </div>
 {/* Radars Row */}
 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
-{/* Concept Radar (Simulated) */}
+{/* Concept Radar */}
 <div className="bg-surface-container p-6 rounded-xl border-[0.5px] border-outline-variant/10 h-[400px] flex flex-col">
 <h3 className="font-headline text-lg font-semibold mb-6 flex items-center justify-between">
                     Concept Viability
-                    <span className="material-symbols-outlined text-on-surface-variant" data-icon="radar">radar</span>
+                    <span className="material-symbols-outlined text-on-surface-variant">radar</span>
 </h3>
 <div className="flex-1 relative flex items-center justify-center">
-{/* Abstract Radar SVG Representation */}
-<svg className="w-full h-full max-w-[280px] max-h-[280px]" fill="none" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-{/* Grid Lines */}
-<polygon fill="none" points="50,10 85,30 85,70 50,90 15,70 15,30" stroke="#35343a" strokeWidth="0.5"></polygon>
-<polygon fill="none" points="50,30 67,40 67,60 50,70 33,60 33,40" stroke="#35343a" strokeWidth="0.5"></polygon>
-<line stroke="#35343a" strokeWidth="0.5" x1="50" x2="50" y1="50" y2="10"></line>
-<line stroke="#35343a" strokeWidth="0.5" x1="50" x2="85" y1="50" y2="30"></line>
-<line stroke="#35343a" strokeWidth="0.5" x1="50" x2="85" y1="50" y2="70"></line>
-<line stroke="#35343a" strokeWidth="0.5" x1="50" x2="50" y1="50" y2="90"></line>
-<line stroke="#35343a" strokeWidth="0.5" x1="50" x2="15" y1="50" y2="70"></line>
-<line stroke="#35343a" strokeWidth="0.5" x1="50" x2="15" y1="50" y2="30"></line>
-{/* Data Area */}
-<polygon fill="rgba(76, 215, 246, 0.1)" points="50,20 75,35 60,65 50,85 25,60 30,35" stroke="#d2bbff" strokeWidth="1.5"></polygon>
-{/* Dots */}
-<circle cx="50" cy="20" fill="#d2bbff" r="2"></circle>
-<circle cx="75" cy="35" fill="#d2bbff" r="2"></circle>
-<circle cx="60" cy="65" fill="#d2bbff" r="2"></circle>
-<circle cx="50" cy="85" fill="#d2bbff" r="2"></circle>
-<circle cx="25" cy="60" fill="#d2bbff" r="2"></circle>
-<circle cx="30" cy="35" fill="#d2bbff" r="2"></circle>
+<svg className="w-full h-full max-w-[280px] max-h-[280px]" fill="none" viewBox="0 0 100 100">
+<polygon fill="none" points="50,15 80,32.5 80,67.5 50,85 20,67.5 20,32.5" stroke="#35343a" strokeWidth="0.5"></polygon>
+<polygon fill="none" points="50,32.5 65,41.25 65,58.75 50,67.5 35,58.75 35,41.25" stroke="#35343a" strokeWidth="0.5"></polygon>
+{rAngles.map((a, i) => <line key={i} stroke="#35343a" strokeWidth="0.5" x1="50" y1="50" x2={50 + 35 * Math.cos(a)} y2={50 + 35 * Math.sin(a)}></line>)}
+<polygon fill="rgba(76, 215, 246, 0.1)" points={radarPolygon} stroke="#d2bbff" strokeWidth="1.5"></polygon>
+{rPoints.map((p, i) => <circle key={i} cx={p.x} cy={p.y} fill="#d2bbff" r="2"></circle>)}
 </svg>
-{/* Labels */}
-<span className="absolute top-0 text-[10px] text-on-surface-variant font-mono">Utility</span>
-<span className="absolute right-0 top-1/4 text-[10px] text-on-surface-variant font-mono">Market Size</span>
-<span className="absolute right-0 bottom-1/4 text-[10px] text-on-surface-variant font-mono">Defensibility</span>
-<span className="absolute bottom-0 text-[10px] text-on-surface-variant font-mono">Monetization</span>
-<span className="absolute left-0 bottom-1/4 text-[10px] text-on-surface-variant font-mono">Tech Risk</span>
-<span className="absolute left-0 top-1/4 text-[10px] text-on-surface-variant font-mono">Urgency</span>
+<span className="absolute top-0 text-[10px] text-on-surface-variant font-mono">Utility ({radarValues.utility}/10)</span>
+<span className="absolute right-0 top-1/4 text-[10px] text-on-surface-variant font-mono">Market ({radarValues.marketSize}/10)</span>
+<span className="absolute right-0 bottom-1/4 text-[10px] text-on-surface-variant font-mono">Defense ({radarValues.defensibility}/10)</span>
+<span className="absolute bottom-0 text-[10px] text-on-surface-variant font-mono">Money ({radarValues.monetization}/10)</span>
+<span className="absolute left-0 bottom-1/4 text-[10px] text-on-surface-variant font-mono">Risk ({radarValues.techRisk}/10)</span>
+<span className="absolute left-0 top-1/4 text-[10px] text-on-surface-variant font-mono">Urgency ({radarValues.urgency}/10)</span>
 </div>
 </div>
-{/* Competitor Analysis */}
+{/* Competitor Landscape */}
 <div className="bg-surface-container p-6 rounded-xl border-[0.5px] border-outline-variant/10 h-[400px] flex flex-col">
 <h3 className="font-headline text-lg font-semibold mb-6 flex items-center justify-between">
                     Competitor Landscape
-                    <span className="material-symbols-outlined text-on-surface-variant" data-icon="compare">compare</span>
+                    <span className="material-symbols-outlined text-on-surface-variant">compare</span>
 </h3>
 <div className="flex flex-col gap-4 overflow-y-auto pr-2">
-{/* Notion */}
-<div className="bg-surface-container-high p-4 rounded-lg flex flex-col gap-3">
+{(data.competitors || []).map((c, i) => (
+<div key={i} className="bg-surface-container-high p-4 rounded-lg flex flex-col gap-3">
 <div className="flex justify-between items-center">
-<span className="font-medium">Notion</span>
-<span className="text-xs text-on-surface-variant px-2 py-1 bg-surface-container-highest rounded">Generalist</span>
+<span className="font-medium">{c.name}</span>
+<span className="text-xs text-on-surface-variant px-2 py-1 bg-surface-container-highest rounded">{c.typeLabel}</span>
 </div>
-<div className="flex gap-2 text-xs">
-<span className="text-error bg-error/10 px-2 py-1 rounded border-[0.5px] border-error/20">Poor HIPAA compliance</span>
-<span className="text-tertiary bg-tertiary/10 px-2 py-1 rounded border-[0.5px] border-tertiary/20">Highly flexible</span>
-</div>
-</div>
-{/* Fibery */}
-<div className="bg-surface-container-high p-4 rounded-lg flex flex-col gap-3">
-<div className="flex justify-between items-center">
-<span className="font-medium">Fibery</span>
-<span className="text-xs text-on-surface-variant px-2 py-1 bg-surface-container-highest rounded">Product Workspace</span>
-</div>
-<div className="flex gap-2 text-xs">
-<span className="text-error bg-error/10 px-2 py-1 rounded border-[0.5px] border-error/20">Steep learning curve</span>
-<span className="text-tertiary bg-tertiary/10 px-2 py-1 rounded border-[0.5px] border-tertiary/20">Deep relations</span>
+<div className="flex gap-2 text-xs flex-wrap">
+<span className="text-error bg-error/10 px-2 py-1 rounded border-[0.5px] border-error/20">{c.weakness}</span>
+<span className="text-tertiary bg-tertiary/10 px-2 py-1 rounded border-[0.5px] border-tertiary/20">{c.strength}</span>
 </div>
 </div>
-{/* Coda */}
-<div className="bg-surface-container-high p-4 rounded-lg flex flex-col gap-3">
-<div className="flex justify-between items-center">
-<span className="font-medium">Coda</span>
-<span className="text-xs text-on-surface-variant px-2 py-1 bg-surface-container-highest rounded">Doc App</span>
-</div>
-<div className="flex gap-2 text-xs">
-<span className="text-error bg-error/10 px-2 py-1 rounded border-[0.5px] border-error/20">Mobile app limited</span>
-<span className="text-tertiary bg-tertiary/10 px-2 py-1 rounded border-[0.5px] border-tertiary/20">Strong automations</span>
-</div>
-</div>
+))}
+{(!data.competitors || data.competitors.length === 0) && <p className="text-sm text-on-surface-variant">No competitors found.</p>}
 </div>
 </div>
 </div>
 {/* Tab Panel */}
 <div className="bg-surface-container rounded-xl border-[0.5px] border-outline-variant/10 overflow-hidden">
-{/* Tab Headers */}
 <div className="flex border-b-[0.5px] border-outline-variant/20 bg-surface-container-low px-4">
-<button className="px-6 py-4 text-primary border-b-2 border-primary font-medium text-sm">PRD</button>
-<button className="px-6 py-4 text-on-surface-variant hover:text-on-surface transition-colors text-sm">Features</button>
-<button className="px-6 py-4 text-on-surface-variant hover:text-on-surface transition-colors text-sm">Architecture</button>
-<button className="px-6 py-4 text-on-surface-variant hover:text-on-surface transition-colors text-sm">GTM Strategy</button>
+{['PRD', 'Features'].map(tab => (
+    <button key={tab} onClick={() => setActiveTab(tab)} className={`px-6 py-4 text-sm font-medium transition-colors ${activeTab === tab ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-on-surface'}`}>{tab}</button>
+))}
 </div>
-{/* Tab Content (PRD Active) */}
+{activeTab === 'PRD' && (
+<div className="p-6 md:p-10 space-y-16">
+    <div className="max-w-5xl mx-auto space-y-12 pb-20">
+        
+        {/* Hero Branding */}
+        <div className="text-center md:text-left border-b border-outline-variant/20 pb-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-4 text-[10px] font-mono uppercase tracking-widest text-primary">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                Official Product Blueprint
+            </div>
+            <h2 className="text-5xl font-headline font-bold tracking-tight mb-4 text-on-surface leading-tight">
+                {data.prd?.productName || 'Strategic Blueprint'}
+            </h2>
+            <p className="text-xl text-on-surface-variant font-medium italic max-w-2xl">
+                {data.prd?.tagline || 'Precision Specification for Market Entry'}
+            </p>
+        </div>
+
+        {/* Executive Summary / Problem Statement */}
+        <section className="space-y-6">
+            <h4 className="flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-primary font-mono font-bold">
+                <span className="w-8 h-[1px] bg-primary"></span>
+                Executive Summary & Problem Statement
+            </h4>
+            <div className="prose prose-invert max-w-none">
+                <p className="text-lg text-on-surface-variant leading-relaxed whitespace-pre-wrap font-body">
+                    {data.prd?.problemStatement || 'Analyzing systemic challenges...'}
+                </p>
+            </div>
+        </section>
+
+        {/* User Intelligence Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            {/* Persona Card */}
+            <section className="space-y-6">
+                <h4 className="flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-primary font-mono font-bold">
+                    <span className="w-8 h-[1px] bg-primary"></span>
+                    Target Audience
+                </h4>
+                <div className="bg-surface-container-high p-8 rounded-2xl border border-outline-variant/10 shadow-xl">
+                    <div className="flex items-center gap-6 mb-6">
+                        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary border border-primary/20">
+                            <span className="material-symbols-outlined text-4xl">face</span>
+                        </div>
+                        <div>
+                            <div className="text-2xl font-bold text-on-surface">{data.prd?.targetPersona || 'Key Stakeholder'}</div>
+                            <div className="text-sm text-primary font-mono mt-1 uppercase tracking-wider">Primary Persona</div>
+                        </div>
+                    </div>
+                    <p className="text-on-surface-variant leading-relaxed text-[15px]">
+                        {data.prd?.targetPersonaImageText || 'Defining user characteristics...'}
+                    </p>
+                </div>
+            </section>
+
+            {/* Pain Points */}
+            <section className="space-y-6">
+                <h4 className="flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-primary font-mono font-bold">
+                    <span className="w-8 h-[1px] bg-primary"></span>
+                    Critical Pain Points
+                </h4>
+                <div className="space-y-3">
+                    {(data.prd?.userPainPoints || []).map((point, i) => (
+                        <div key={i} className="flex gap-4 p-4 rounded-xl bg-surface-container-low border border-outline-variant/5">
+                            <div className="w-6 h-6 rounded-full bg-error/10 flex items-center justify-center shrink-0">
+                                <span className="material-symbols-outlined text-xs text-error">close</span>
+                            </div>
+                            <p className="text-sm text-on-surface-variant">{point}</p>
+                        </div>
+                    ))}
+                    {(!data.prd?.userPainPoints || data.prd.userPainPoints.length === 0) && (
+                        <p className="italic text-on-surface-variant/50 text-sm">Identifying friction points...</p>
+                    )}
+                </div>
+            </section>
+        </div>
+
+        {/* Market Intelligence */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <div className="space-y-4">
+                <h4 className="flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-secondary font-mono font-bold">
+                    <span className="w-8 h-[1px] bg-secondary"></span>
+                    The Market Gap
+                </h4>
+                <p className="text-[15px] text-on-surface-variant leading-relaxed bg-surface-container/50 p-6 rounded-2xl border border-outline-variant/10 italic">
+                    {data.prd?.marketGap || 'Analyzing existing solutions...'}
+                </p>
+            </div>
+            <div className="space-y-4">
+                <h4 className="flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-secondary font-mono font-bold">
+                    <span className="w-8 h-[1px] bg-secondary"></span>
+                    Market Opportunity
+                </h4>
+                <p className="text-[15px] text-on-surface-variant leading-relaxed p-6">
+                    {data.prd?.marketOpportunity || 'Surfacing market triggers...'}
+                </p>
+            </div>
+        </section>
+
+        {/* Strategic Vision */}
+        <section className="space-y-8 bg-surface-container-lowest p-10 rounded-3xl border border-outline-variant/20 shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none">
+                <span className="material-symbols-outlined text-9xl">telescope</span>
+            </div>
+            <div className="relative z-10 space-y-10">
+                <div className="space-y-4">
+                    <h4 className="flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-tertiary font-mono font-bold">
+                        <span className="w-8 h-[1px] bg-tertiary"></span>
+                        Strategic Hypothesis
+                    </h4>
+                    <p className="text-2xl font-headline font-semibold text-on-surface leading-snug">
+                       "{data.prd?.coreHypothesis || 'Forging core bet...'}"
+                    </p>
+                </div>
+                <div className="space-y-4">
+                    <h4 className="flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-tertiary font-mono font-bold">
+                        <span className="w-8 h-[1px] bg-tertiary"></span>
+                        Long-Term Vision
+                    </h4>
+                    <p className="text-[15px] text-on-surface-variant leading-relaxed max-w-3xl">
+                        {data.prd?.longTermVision || 'Scaling product horizons...'}
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        {/* Risk Portfolio */}
+        <section className="space-y-6">
+            <h4 className="flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-error font-mono font-bold">
+                <span className="w-8 h-[1px] bg-error"></span>
+                Risk Portfolio & Mitigation
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {(data.prd?.mitigations || []).map((m, i) => (
+                    <div key={i} className="bg-surface-container-high p-6 rounded-2xl border border-outline-variant/10 space-y-4">
+                        <div className="flex items-center gap-2 text-error font-bold text-xs uppercase tracking-widest font-mono">
+                            <span className="material-symbols-outlined text-sm">warning</span>
+                            Risk
+                        </div>
+                        <p className="text-sm text-on-surface font-medium border-b border-outline-variant/20 pb-4">{m.risk}</p>
+                        <div className="flex items-center gap-2 text-success font-bold text-xs uppercase tracking-widest font-mono">
+                            <span className="material-symbols-outlined text-sm text-secondary">verified_user</span>
+                            Mitigation
+                        </div>
+                        <p className="text-xs text-on-surface-variant leading-relaxed">{m.solution}</p>
+                    </div>
+                ))}
+                {(!data.prd?.mitigations || data.prd.mitigations.length === 0) && (
+                    <p className="italic text-on-surface-variant/50 text-sm">Calculating systemic risks...</p>
+                )}
+            </div>
+        </section>
+
+        {/* Engineering Blueprint (Backend Integration) */}
+        <section className="space-y-10 border-t border-outline-variant/20 pt-16">
+            <div className="space-y-2">
+                <h4 className="flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-primary font-mono font-bold">
+                    <span className="w-8 h-[1px] bg-primary"></span>
+                    Engineering Blueprint
+                </h4>
+                <p className="text-sm text-on-surface-variant font-medium">Precision Backend and Infrastructure Specification</p>
+            </div>
+
+            {/* Tech Stack Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[
+                    { label: 'Frontend', value: data.prd?.technicalSpec?.techStack?.frontend, icon: 'laptop_mac' },
+                    { label: 'Backend', value: data.prd?.technicalSpec?.techStack?.backend, icon: 'dns' },
+                    { label: 'Database', value: data.prd?.technicalSpec?.techStack?.database, icon: 'database' },
+                    { label: 'Infrastructure', value: data.prd?.technicalSpec?.techStack?.infrastructure, icon: 'cloud' }
+                ].map((item, i) => (
+                    <div key={i} className="bg-surface-container-high p-6 rounded-2xl border border-outline-variant/10 flex flex-col gap-3">
+                        <span className="material-symbols-outlined text-primary/40">{item.icon}</span>
+                        <div className="text-[10px] uppercase tracking-widest text-on-surface-variant font-mono">{item.label}</div>
+                        <div className="text-sm font-bold text-on-surface">{item.value || 'Configuring...'}</div>
+                    </div>
+                ))}
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                {/* Data Architecture */}
+                <div className="space-y-6">
+                    <h5 className="text-sm font-bold text-on-surface flex items-center gap-2">
+                        <span className="material-symbols-outlined text-primary text-[18px]">schema</span>
+                        Primary Data Entities
+                    </h5>
+                    <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/10 overflow-hidden">
+                        <table className="w-full text-xs text-left">
+                            <thead className="bg-surface-container/50 text-on-surface-variant uppercase font-mono text-[9px]">
+                                <tr>
+                                    <th className="px-5 py-3 font-bold">Table</th>
+                                    <th className="px-5 py-3 font-bold">Responsibility</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-outline-variant/10">
+                                {(data.prd?.technicalSpec?.databaseArchitecture || []).map((db, i) => (
+                                    <tr key={i} className="hover:bg-surface-container/30 transition-colors">
+                                        <td className="px-5 py-4 text-on-surface font-mono">{db.table}</td>
+                                        <td className="px-5 py-4 text-on-surface-variant leading-relaxed">{db.description}</td>
+                                    </tr>
+                                ))}
+                                {(!data.prd?.technicalSpec?.databaseArchitecture || data.prd.technicalSpec.databaseArchitecture.length === 0) && (
+                                    <tr><td colSpan="2" className="px-5 py-8 text-center text-on-surface-variant/50 italic font-mono uppercase tracking-widest">Compiling schema...</td></tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {/* API Strategy */}
+                <div className="space-y-6">
+                    <h5 className="text-sm font-bold text-on-surface flex items-center gap-2">
+                        <span className="material-symbols-outlined text-primary text-[18px]">hub</span>
+                        External Service Matrix
+                    </h5>
+                    <div className="grid grid-cols-1 gap-4">
+                        {(data.prd?.technicalSpec?.apiIntegrations || []).map((api, i) => (
+                            <div key={i} className="flex items-center justify-between p-4 bg-surface-container-low rounded-xl border border-outline-variant/5">
+                                <div className="flex flex-col gap-1">
+                                    <div className="text-sm font-bold text-on-surface">{api.service}</div>
+                                    <div className="text-xs text-on-surface-variant">{api.purpose}</div>
+                                </div>
+                                <span className="material-symbols-outlined text-success text-[18px]">link</span>
+                            </div>
+                        ))}
+                        {(!data.prd?.technicalSpec?.apiIntegrations || data.prd.technicalSpec.apiIntegrations.length === 0) && (
+                             <div className="text-center py-10 text-on-surface-variant/50 italic font-mono text-xs uppercase tracking-widest">Mapping integrations...</div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {/* Security Arch */}
+            <div className="bg-gradient-to-br from-primary/10 to-transparent p-8 rounded-3xl border border-primary/20 space-y-4">
+                <div className="flex items-center gap-3 text-primary font-bold text-xs uppercase tracking-[0.2em] font-mono">
+                    <span className="material-symbols-outlined text-[18px]">verified_user</span>
+                    Security & Compliance Architecture
+                </div>
+                <p className="text-sm text-on-surface-variant leading-loose max-w-4xl">
+                    {data.prd?.technicalSpec?.securityModel || 'Drafting security protocols...'}
+                </p>
+            </div>
+        </section>
+
+        {/* Success Benchmarks */}
+        <section className="space-y-6">
+            <h4 className="flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-on-surface-variant font-mono font-bold">
+                <span className="w-8 h-[1px] bg-outline-variant"></span>
+                Success Benchmarks
+            </h4>
+            <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/10 overflow-hidden">
+                <table className="w-full text-sm text-left">
+                    <thead className="bg-surface-container/50 text-on-surface-variant text-[10px] uppercase font-mono tracking-[0.2em]">
+                        <tr>
+                            <th className="px-8 py-4 font-bold">Success Indicator</th>
+                            <th className="px-8 py-4 font-bold">Baseline (Current)</th>
+                            <th className="px-8 py-4 font-bold text-secondary">Target (Post-MVP)</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-outline-variant/10 font-mono text-xs">
+                        <tr className="bg-surface-container/20 group hover:bg-surface-container transition-colors">
+                            <td className="px-8 py-6 text-on-surface font-bold">Core Viability Metric</td>
+                            <td className="px-8 py-6 text-on-surface-variant">{data.prd?.successBaseline || 'Analysing...'}</td>
+                            <td className="px-8 py-6 text-secondary font-bold">{data.prd?.successTarget || 'Calculating...'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>
+)}
+{activeTab === 'Features' && (
 <div className="p-6 md:p-10">
-<div className="max-w-4xl">
-<h2 className="text-3xl font-headline font-bold tracking-tight mb-8">Product Requirements Document v1.0</h2>
-<div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-{/* Problem Statement */}
-<div>
-<h4 className="text-xs uppercase tracking-widest text-on-surface-variant font-mono mb-3">Problem Statement</h4>
-<p className="text-sm text-on-surface-variant leading-relaxed">
-                                Therapists spend an average of 15 minutes per session writing notes. Existing generalized tools lack specific psychiatric frameworks, and specialized tools are clunky and lack modern AI summarization, leading to clinician burnout and less precise patient continuity.
-                            </p>
-</div>
-{/* Target Audience */}
-<div>
-<h4 className="text-xs uppercase tracking-widest text-on-surface-variant font-mono mb-3">Target Persona</h4>
-<div className="bg-surface-container-high p-4 rounded-lg flex items-start gap-4 border-[0.5px] border-outline-variant/10">
-<div className="w-12 h-12 rounded bg-surface-variant overflow-hidden shrink-0">
-<img alt="Persona" className="w-full h-full object-cover grayscale opacity-80" data-alt="Middle aged female doctor in clinic setting looking thoughtful" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuIEAYboykcrYzk9eLmUsRYgnyJ2QzAj-OvNMNZJe8MIswPWKqFAF8n3bLyg-0MD50Cbs77KQi9q1PCQ4rWpZiXX8CpUHunvtlaz1zbxPIPH5vxa6fGNJjzeYcdFSYDnIy_e_7A1_AWr4XXPLxYjTc_zpJyaygnfi6WMnLO0wk1EwIS31aChIrG5Kms0ZDt4Q4tLAuRdGKxxWE4kt4obrGMjrkGywEaPRZDYvUsPbXGgQTN6G_FDuaqWNdUGn39IQSjKpzuPoriRro"/>
-</div>
-<div>
-<div className="font-medium text-sm">Dr. Sarah Jenkins</div>
-<div className="text-xs text-on-surface-variant mt-1">Private Practice Therapist. Sees 25 patients/week. Values minimal clicking and high security.</div>
+<div className="max-w-4xl space-y-4">
+<h2 className="text-3xl font-headline font-bold tracking-tight mb-4">MVP Feature Set</h2>
+{mvpFeatures.map((f, i) => (
+    <div key={i} className="bg-surface-container-high p-5 rounded-xl border-[0.5px] border-outline-variant/10 flex flex-col gap-2">
+        <div className="flex justify-between items-center">
+            <h5 className="font-medium text-on-surface">{f.title}</h5>
+            <span className={`text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded ${f.complexity === 'High' ? 'text-error bg-error/10' : f.complexity === 'Medium' ? 'text-primary bg-primary/10' : 'text-secondary bg-secondary/10'}`}>{f.complexity}</span>
+        </div>
+        <p className="text-xs text-on-surface-variant">{f.description}</p>
+    </div>
+))}
+{mvpFeatures.length === 0 && <p className="text-sm text-on-surface-variant">No MVP features specified.</p>}
 </div>
 </div>
-</div>
-</div>
-<h4 className="text-xs uppercase tracking-widest text-on-surface-variant font-mono mb-4">Success Metrics</h4>
-<div className="bg-surface-container-lowest rounded-lg border-[0.5px] border-outline-variant/10 overflow-hidden">
-<table className="w-full text-sm text-left">
-<thead className="bg-surface-container-low text-on-surface-variant text-xs uppercase font-mono">
-<tr>
-<th className="px-6 py-3 font-normal">Metric</th>
-<th className="px-6 py-3 font-normal">Baseline</th>
-<th className="px-6 py-3 font-normal">Target</th>
-</tr>
-</thead>
-<tbody className="divide-y-[0.5px] divide-outline-variant/10 font-mono text-xs">
-<tr className="bg-surface-container">
-<td className="px-6 py-4 text-on-surface">Time per session note</td>
-<td className="px-6 py-4 text-on-surface-variant">15 mins</td>
-<td className="px-6 py-4 text-tertiary">&lt; 4 mins</td>
-</tr>
-<tr className="bg-surface-container-low">
-<td className="px-6 py-4 text-on-surface">HIPAA Compliance Check</td>
-<td className="px-6 py-4 text-on-surface-variant">Manual</td>
-<td className="px-6 py-4 text-tertiary">Automated</td>
-</tr>
-<tr className="bg-surface-container">
-<td className="px-6 py-4 text-on-surface">Daily Active Usage (DAU)</td>
-<td className="px-6 py-4 text-on-surface-variant">N/A</td>
-<td className="px-6 py-4 text-tertiary">&gt; 80% workdays</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
+)}
 </div>
 </main>
 </div>
 {/* Bottom Export Bar */}
 <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-surface-container-high/90 backdrop-blur-md px-2 py-2 rounded-full border-[0.5px] border-outline-variant/30 flex items-center gap-1 shadow-[0_8px_32px_rgba(0,0,0,0.4)] z-40">
 <button className="px-4 py-2 rounded-full text-xs font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors flex items-center gap-2">
-<span className="material-symbols-outlined text-[16px]" data-icon="picture_as_pdf">picture_as_pdf</span>
-            PDF
-        </button>
+<span className="material-symbols-outlined text-[16px]">picture_as_pdf</span>PDF
+</button>
 <div className="w-[1px] h-4 bg-outline-variant/30 mx-1"></div>
 <button className="px-4 py-2 rounded-full text-xs font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors flex items-center gap-2">
-<span className="material-symbols-outlined text-[16px]" data-icon="markdown">markdown</span>
-            Markdown
-        </button>
-<div className="w-[1px] h-4 bg-outline-variant/30 mx-1"></div>
-<button className="px-4 py-2 rounded-full text-xs font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors flex items-center gap-2">
-<span className="material-symbols-outlined text-[16px]" data-icon="folder_zip">folder_zip</span>
-            ZIP
-        </button>
+<span className="material-symbols-outlined text-[16px]">markdown</span>Markdown
+</button>
 <div className="w-[1px] h-4 bg-outline-variant/30 mx-1"></div>
 <button className="px-4 py-2 rounded-full text-xs font-medium bg-primary-container text-on-primary hover:bg-primary transition-colors flex items-center gap-2 shadow-[0_0_12px_rgba(124,58,237,0.3)]">
-<span className="material-symbols-outlined text-[16px]" data-icon="link">link</span>
-            Copy Link
-        </button>
+<span className="material-symbols-outlined text-[16px]">link</span>Copy Link
+</button>
 </div>
-{/* Footer */}
-<footer className="mt-auto py-12 border-t border-[#39383e]/10 bg-[#0D0D12] w-full text-center">
-<div className="max-w-7xl mx-auto flex flex-col items-center gap-4">
-<div className="flex gap-6 font-['JetBrains_Mono'] text-[10px] uppercase tracking-widest text-[#4b5563]">
-<Link className="hover:text-[#d2bbff] transition-colors" to="/dashboard">Privacy</Link>
-<Link className="hover:text-[#d2bbff] transition-colors" to="/dashboard">Terms</Link>
-<Link className="hover:text-[#d2bbff] transition-colors" to="/dashboard">API</Link>
-<Link className="hover:text-[#d2bbff] transition-colors" to="/dashboard">Changelog</Link>
-</div>
-<p className="font-['JetBrains_Mono'] text-[10px] uppercase tracking-widest text-[#4b5563]">© 2024 SpecForge AI. Kinetic Monolith Design.</p>
-</div>
-</footer>
 
         </div>
     );
