@@ -1,8 +1,8 @@
-import { useEffect, useRef, memo } from 'react';
+import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import './LiquidEther.css';
 
-const LiquidEther = memo(function LiquidEther({
+export default function LiquidEther({
   mouseForce = 20,
   cursorSize = 100,
   isViscous = false,
@@ -1095,7 +1095,25 @@ const LiquidEther = memo(function LiquidEther({
       }
       webglRef.current = null;
     };
-  }, [colors]);
+  }, [
+    BFECC,
+    cursorSize,
+    dt,
+    isBounce,
+    isViscous,
+    iterationsPoisson,
+    iterationsViscous,
+    mouseForce,
+    resolution,
+    viscous,
+    colors,
+    autoDemo,
+    autoSpeed,
+    autoIntensity,
+    takeoverDuration,
+    autoResumeDelay,
+    autoRampDuration
+  ]);
 
   useEffect(() => {
     const webgl = webglRef.current;
@@ -1148,6 +1166,4 @@ const LiquidEther = memo(function LiquidEther({
   ]);
 
   return <div ref={mountRef} className={`liquid-ether-container ${className || ''}`} style={style} />;
-});
-
-export default LiquidEther;
+}

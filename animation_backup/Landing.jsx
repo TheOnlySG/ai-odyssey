@@ -7,7 +7,6 @@ import NetflixIntro from './components/NetflixIntro';
 import LiquidEther from './components/LiquidEther';
 import GradientText from './components/GradientText';
 
-const BACKGROUND_COLORS = ['#5227FF', '#FF9FFC', '#B497CF'];
 const Landing = () => {
   const [idea, setIdea] = useState('');
   const [showIntro, setShowIntro] = useState(true);
@@ -51,7 +50,7 @@ const Landing = () => {
           >
             {/* Ambient Animated Background - Only loads after intro */}
             <div className="absolute inset-0 z-0">
-              <LiquidEther colors={BACKGROUND_COLORS} />
+              <LiquidEther colors={['#5227FF', '#FF9FFC', '#B497CF']} />
             </div>
             
             {/* TopNavBar */}
